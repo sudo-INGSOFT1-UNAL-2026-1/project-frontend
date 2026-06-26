@@ -11,8 +11,10 @@ function App() {
   useEffect(() => {
     async function checkInitialization() {
       try {
+        console.log("Verificando el estado de inicialización...");
         const data = await getInitializationStatus();
         setInitialized(data.initialized);
+        console.log("Estado de inicialización:", data);
       } catch (error) {
         console.error("Error al verificar el estado de inicialización:", error);
       }
