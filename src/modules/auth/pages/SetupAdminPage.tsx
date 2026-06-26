@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createAdmin } from "../services/authApi";
+import { createUser } from "../../user/services/userApi";
 
 export default function SetupAdminPage() {
 
@@ -9,7 +9,12 @@ export default function SetupAdminPage() {
 
     const handleCreateAdmin = async () => {
         try {
-            const response = await createAdmin(name, email, password);
+            const response = await createUser({
+                name,
+                email,
+                password,
+                roleName: "ADMIN_EMPRESA"
+            });
             console.log("Administrador creado:", response);
             alert("Administrador creado exitosamente");
         } catch (error) {
