@@ -1,11 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { createUser } from "../../user/services/userApi";
+
 
 export default function SetupAdminPage() {
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const handleCreateAdmin = async () => {
         try {
@@ -17,6 +21,8 @@ export default function SetupAdminPage() {
             });
             console.log("Administrador creado:", response);
             alert("Administrador creado exitosamente");
+
+            navigate("/login");
         } catch (error) {
             console.error("Error al crear el administrador:", error);
             alert("Error al crear el administrador");
