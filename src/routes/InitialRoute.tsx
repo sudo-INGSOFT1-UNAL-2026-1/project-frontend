@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 import {getInitializationStatus} from "../modules/auth/services/authApi";
+import { isAuthenticated } from "../shared/utils/sessionManager";
 
 export default function InitialRoute() {
 
@@ -32,9 +33,7 @@ export default function InitialRoute() {
         return <Navigate to="/setup-admin" replace />;
     }
 
-    const token = localStorage.getItem("token");
-
-    if (!token) {
+    if (!isAuthenticated()) {
         return <Navigate to="/login" replace />;
     }
 

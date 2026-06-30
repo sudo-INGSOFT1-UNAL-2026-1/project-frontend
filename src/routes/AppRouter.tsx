@@ -5,6 +5,8 @@ import InitialRoute from "./InitialRoute";
 import DashboardPage from "../modules/dashboard/pages/DashboardPage";
 import LoginPage from "../modules/auth/pages/LoginPage";
 import SetupAdminPage from "../modules/auth/pages/SetupAdminPage";
+import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
 
 export default function AppRouter() {
     return(
@@ -17,17 +19,29 @@ export default function AppRouter() {
                 
                 <Route
                     path="/login"
-                    element={<LoginPage />}
-                /> 
+                    element={
+                        <PublicRoute>
+                            <LoginPage />
+                        </PublicRoute>
+                    }
+                />
 
                 <Route
                     path="/setup-admin"
-                    element={<SetupAdminPage />}
+                    element={
+                        <PublicRoute>
+                    <SetupAdminPage />
+                        </PublicRoute>
+                    }
                 />
 
                 <Route
                     path="/dashboard"
-                    element={<DashboardPage />}
+                    element={
+                            <ProtectedRoute>
+                                <DashboardPage />
+                            </ProtectedRoute>
+                        }
                 />
             </Routes>
         </BrowserRouter>
