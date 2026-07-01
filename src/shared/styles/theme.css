@@ -1,0 +1,7 @@
+:root{
+
+    --page-background-color: var(--color-background);
+    --card-background-color: var(--color-surface);
+    --button-primary-color: var(--color-primary);
+    --button-primary-hover-color: var(--color-primary-hover);
+}

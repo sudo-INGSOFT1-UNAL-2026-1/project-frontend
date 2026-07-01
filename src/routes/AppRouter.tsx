@@ -7,7 +7,7 @@ import LoginPage from "../modules/auth/pages/LoginPage";
 import SetupAdminPage from "../modules/auth/pages/SetupAdminPage";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
-import Layout from "../shared/components/Layout";
+import Layout from "../shared/components/Layout/Layout";
 import UsersPage from "../modules/user/pages/UsersPage";
 import InventoryPage from "../modules/inventory/pages/InventoryPage";
 import PurchasesPage from "../modules/purchases/pages/PurchasesPage";
