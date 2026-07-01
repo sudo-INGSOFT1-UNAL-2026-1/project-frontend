@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { login } from "../services/authApi";
-import { setToken } from "../../../shared/utils/sessionManager";
+import { setSession } from "../../../shared/utils/sessionManager";
 
 
 export default function LoginPage() {
@@ -14,7 +14,7 @@ export default function LoginPage() {
         try {
             const response = await login({ email, password });
 
-            setToken(response.token);
+            setSession(response);
 
             navigate("/dashboard");
 

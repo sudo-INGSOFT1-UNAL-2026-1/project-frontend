@@ -11,7 +11,7 @@ export default function InitialRoute() {
 
     useEffect(() => {
 
-        async function initialize() {
+        async function checkInitialization() {
             try {
                 const response = await getInitializationStatus();
                 
@@ -21,7 +21,7 @@ export default function InitialRoute() {
         }
     }
 
-    initialize();
+        checkInitialization();
     
     },[]);
     

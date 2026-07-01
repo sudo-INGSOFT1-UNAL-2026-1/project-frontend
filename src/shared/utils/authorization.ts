@@ -9,5 +9,9 @@ export function canAccess(permission: Permission): boolean {
         return false;
     }
 
-    return permissions[role as keyof typeof permissions][permission];
+    return permissions[role][permission];
+}
+
+export function isAdmin(): boolean {
+    return canAccess("canAccessUsers");
 }
