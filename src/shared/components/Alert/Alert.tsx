@@ -1,11 +1,16 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type {
+    HTMLAttributes,
+    ReactNode,
+} from "react";
 
-import type { AlertSize, AlertVariant } from "./types";
+import type {
+    AlertSize,
+    AlertVariant,
+} from "./types";
 
 import "./Alert.css";
 
 interface AlertProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
-
     variant?: AlertVariant;
 
     size?: AlertSize;
@@ -16,7 +21,7 @@ interface AlertProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
 
     icon?: ReactNode;
 
-    closable?: boolean;
+    dismissible?: boolean;
 
     onClose?: () => void;
 }
@@ -27,12 +32,11 @@ export default function Alert({
     title,
     children,
     icon,
-    closable = false,
+    dismissible = false,
     onClose,
     className = "",
     ...props
-}: AlertProps) {
-
+    }: AlertProps) {
     const classes = [
         "alert",
         `alert--${variant}`,
@@ -55,7 +59,6 @@ export default function Alert({
         )}
 
         <div className="alert__content">
-
             {title && (
             <h4 className="alert__title">
                 {title}
@@ -65,10 +68,9 @@ export default function Alert({
             <div className="alert__message">
             {children}
             </div>
-
         </div>
 
-        {closable && (
+        {dismissible && (
             <button
             type="button"
             className="alert__close"
