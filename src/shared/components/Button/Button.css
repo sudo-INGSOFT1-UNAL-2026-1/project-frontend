@@ -1,0 +1,123 @@
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+
+    padding: 10px 18px;
+
+    border: none;
+    border-radius: var(--radius-md);
+
+    cursor: pointer;
+
+    font-family: var(--font-family);
+    font-size: var(--font-md);
+    font-weight: var(--font-weight-semibold);
+
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        border-color var(--transition-fast),
+        transform var(--transition-fast);
+        box-shadow: var(--transition-fast);
+    
+    user-select: none;
+    white-space: nowrap;
+}
+
+.button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.button:active:not(:disabled) {
+    transform: scale(.98);
+}
+
+.button:focus-visible {
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 2px;
+}
+
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.button--primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.button--primary:hover:not(:disabled) {
+    background-color: var(--color-background);
+}
+
+.button-success {
+    background: var(--color-success);
+    color: var(--color-white);
+}
+
+.button--danger{
+    background: var(--color-danger);
+    color: var(--color-white);
+}
+
+.button--sm {
+    padding: 6px 14px;
+    font-size: var(--font-sm);
+}
+
+.button--md {
+    padding: 10px 18px;
+    font-size: var(--font-md);
+}
+
+.button--lg {
+    padding: 14px 22px;
+    font-size: var(--font-lg);
+}
+
+.button--full{
+    width: 100%;
+}
+
+.button--loading {
+    pointer-events: none;
+}
+
+.button__spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: button-spinner 0.8s linear infinite;
+}
+
+@keyframes button-spin{
+    to{
+        transform: rotate(360deg);
+    }
+}
+
+.button--warning {
+    background: var(--color-warning);
+    color: var(--color-white);
+}
+
+.button--warning:hover:not(:disabled) {
+    filter: brightness(.95);
+}
+
+.button--info {
+    background: var(--color-info);
+    color: var(--color-white);
+}
+
+.button--info:hover:not(:disabled) {
+    filter: brightness(.95);
+}
