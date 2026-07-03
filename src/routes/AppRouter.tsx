@@ -2,9 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import InitialRoute from "./InitialRoute";
 
-import DashboardPage from "../modules/dashboard/pages/DashboardPage";
+import DashboardPage from "../modules/dashboard/pages/DashboardPage/DashboardPage";
 import LoginPage from "../modules/auth/pages/LoginPage/LoginPage";
-import SetupAdminPage from "../modules/auth/pages/SetupAdminPage";
+import SetupAdminPage from "../modules/auth/pages/SetupAdminPage/SetupAdminPage";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import Layout from "../shared/components/Layout/Layout";

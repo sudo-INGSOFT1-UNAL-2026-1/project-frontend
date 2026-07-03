@@ -1,4 +1,4 @@
-.setup-admin-page {
+.auth-layout {
     display: flex;
 
     justify-content: center;
@@ -12,16 +12,18 @@
     background: var(--color-background);
 }
 
-.setup-admin-page__card {
+.auth-layout__card {
     width: 100%;
 
-    max-width: 480px;
+    max-width: 460px;
 }
 
-.setup-admin-page__header {
+.auth-layout__header {
     display: flex;
 
     flex-direction: column;
+
+    align-items: center;
 
     gap: var(--space-sm);
 
@@ -30,7 +32,23 @@
     text-align: center;
 }
 
-.setup-admin-page__title {
+.auth-layout__logo {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    width: 72px;
+
+    height: 72px;
+
+    margin-bottom: var(--space-md);
+
+    color: var(--color-primary);
+}
+
+.auth-layout__title {
     margin: 0;
 
     color: var(--color-primary);
@@ -40,20 +58,20 @@
     font-weight: var(--font-weight-bold);
 }
 
-.setup-admin-page__subtitle {
+.auth-layout__subtitle {
     margin: 0;
 
     color: var(--color-text-secondary);
 
     font-size: var(--font-md);
+
+    line-height: 1.5;
 }
 
-.setup-admin-page__form {
+.auth-layout__content {
     display: flex;
 
     flex-direction: column;
 
     gap: var(--space-lg);
-
-    margin-top: var(--space-lg);
 }
