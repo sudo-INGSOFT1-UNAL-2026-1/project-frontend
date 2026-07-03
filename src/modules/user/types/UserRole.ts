@@ -21,3 +21,8 @@ export const roleLabels: Record<UserRole, string> = {
     EMPLEADO_COMPRAS_INVENTARIO: "Empleado de Compras e Inventario",
     EMPLEADO_TOTAL: "Acceso Total a Empleado",
 };
+
+export const roleOptions = ( 
+    Object.entries(roleLabels) as 
+    [UserRole, string][]).map(([value, label]) => ({ value, label,})
+);

@@ -21,7 +21,7 @@ interface AlertProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
 
     icon?: ReactNode;
 
-    dismissible?: boolean;
+    closable?: boolean;
 
     onClose?: () => void;
 }
@@ -32,7 +32,7 @@ export default function Alert({
     title,
     children,
     icon,
-    dismissible = false,
+    closable = false,
     onClose,
     className = "",
     ...props
@@ -70,7 +70,7 @@ export default function Alert({
             </div>
         </div>
 
-        {dismissible && (
+        {closable && (
             <button
             type="button"
             className="alert__close"

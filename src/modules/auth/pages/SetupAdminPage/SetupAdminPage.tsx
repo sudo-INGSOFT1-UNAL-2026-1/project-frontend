@@ -109,7 +109,7 @@ export default function SetupAdminPage() {
                 <Alert
                     variant="danger"
                     title="Error"
-                    dismissible
+                    closable
                     onClose={() => setError("")}
                 >
                     {error}

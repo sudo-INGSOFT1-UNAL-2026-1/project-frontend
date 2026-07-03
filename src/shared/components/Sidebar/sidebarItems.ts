@@ -1,110 +1,92 @@
-import { createElement } from "react";
 import {
-    Boxes,
-    LayoutDashboard,
-    PackagePlus,
-    ReceiptText,
-    ShoppingCart,
-    Users,
-    UserPlus,
+  Boxes,
+  LayoutDashboard,
+  PackagePlus,
+  ReceiptText,
+  ShoppingCart,
+  UserPlus,
+  Users
 } from "lucide-react";
 
 import type { SidebarItem } from "./types";
 
 export const sidebarItems: SidebarItem[] = [
-    {
-        label: "Dashboard",
-        path: "/dashboard",
-        icon: createElement(LayoutDashboard, {
-            size: 20,
-        }),
-    },
+  {
+      id: "dashboard",
+      label: "Dashboard",
+      path: "/dashboard",
+      icon: LayoutDashboard,
+  },
 
-    {
-        label: "Usuarios",
-        icon: createElement(Users, {
-            size: 20,
-        }),
-        permission: "canAccessUsers",
+  {
+      id: "users",
+      label: "Usuarios",
+      icon: Users,
+      permission: "canAccessUsers",
+      children: [
+          {
+              id: "users-list",
+              label: "Lista de usuarios",
+              path: "/users",
+              icon: Users,
+          },
+          {
+              id: "users-create",
+              label: "Nuevo usuario",
+              path: "/users/create",
+              icon: UserPlus,
+          },
+      ],
+  },
 
-        children: [
-            {
-                label: "Lista de usuarios",
-                path: "/users",
-                icon: createElement(Users, {
-                    size: 18,
-                }),
-            },
+  {
+      id: "inventory",
+      label: "Inventario",
+      icon: Boxes,
+      permission: "canAccessInventory",
+      children: [
+          {
+              id: "inventory-products",
+              label: "Productos",
+              path: "/inventory",
+              icon: Boxes,
+          },
+          {
+              id: "inventory-create",
+              label: "Nuevo producto",
+              path: "/inventory/create",
+              icon: PackagePlus,
+          },
+      ],
+  },
 
-            {
-                label: "Nuevo usuario",
-                path: "/users/create",
-                icon: createElement(UserPlus, {
-                    size: 18,
-                }),
-            },
-        ],
-    },
+  {
+      id: "purchases",
+      label: "Compras",
+      icon: ShoppingCart,
+      permission: "canAccessPurchases",
+      children: [
+          {
+              id: "purchases-list",
+              label: "Órdenes de compra",
+              path: "/purchases",
+              icon: ShoppingCart,
+          },
+      ],
+  },
 
-    {
-        label: "Inventario",
-        icon: createElement(Boxes, {
-            size: 20,
-        }),
-        permission: "canAccessInventory",
-
-        children: [
-            {
-                label: "Productos",
-                path: "/inventory",
-                icon: createElement(Boxes, {
-                    size: 18,
-                }),
-            },
-
-            {
-                label: "Nuevo producto",
-                path: "/inventory/create",
-                icon: createElement(PackagePlus, {
-                    size: 18,
-                }),
-            },
-        ],
-    },
-
-    {
-        label: "Compras",
-        icon: createElement(ShoppingCart, {
-            size: 20,
-        }),
-        permission: "canAccessPurchases",
-
-        children: [
-            {
-                label: "Órdenes",
-                path: "/purchases",
-                icon: createElement(ShoppingCart, {
-                    size: 18,
-                }),
-            },
-        ],
-    },
-
-    {
-        label: "Ventas",
-        icon: createElement(ReceiptText, {
-            size: 20,
-        }),
-        permission: "canAccessSales",
-
-        children: [
-            {
-                label: "Ventas",
-                path: "/sales",
-                icon: createElement(ReceiptText, {
-                    size: 18,
-                }),
-            },
-        ],
-    },
+  {
+      id: "sales",
+      label: "Ventas",
+      icon: ReceiptText,
+      permission: "canAccessSales",
+      children: [
+          {
+              id: "sales-list",
+              label: "Ventas",
+              path: "/sales",
+              icon: ReceiptText,
+          },
+      ],
+  },
 ];

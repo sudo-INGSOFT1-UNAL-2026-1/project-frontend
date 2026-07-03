@@ -1,16 +1,18 @@
-import type { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 
 import type { Permission } from "../../utils/permissions";
 
 export interface SidebarItem {
 
+    id: string;
+
     label: string;
 
-    icon: ReactNode;
+    path?: string;
+
+    icon: LucideIcon;
 
     permission?: Permission;
-
-    path?: string;
 
     children?: SidebarItem[];
 }

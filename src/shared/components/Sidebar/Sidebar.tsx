@@ -1,64 +1,98 @@
-import { NavLink } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
-import { canAccess } from "../../utils/authorization";
-
+import SidebarItem from "./SidebarItem";
 import { sidebarItems } from "./sidebarItems";
 
 import "./Sidebar.css";
 
+const STORAGE_KEY = "sidebar-collapsed";
+
 export default function Sidebar() {
+    const [collapsed, setCollapsed] = useState(() => {
+        return localStorage.getItem(STORAGE_KEY) === "true";
+    });
+
+    const [expandedItems, setExpandedItems] = useState<string[]>([]);
+
+    useEffect(() => {
+        localStorage.setItem(
+            STORAGE_KEY,
+            String(collapsed)
+        );
+    }, [collapsed]);
+
+    const visibleItems = useMemo(
+        () => sidebarItems,
+        []
+    );
+
+    function toggleItem(id: string) {
+        setExpandedItems((current) =>
+            current.includes(id)
+                ? current.filter((item) => item !== id)
+                : [...current, id]
+        );
+    }
+
     return (
-        <aside className="sidebar">
-        <div className="sidebar__brand">
-            <h2 className="sidebar__title">
-            UNERP
-            </h2>
+        <aside
+            className={[
+                "sidebar",
+                collapsed &&
+                    "sidebar--collapsed",
+            ]
+                .filter(Boolean)
+                .join(" ")}
+        >
+            <header className="sidebar__header">
+                {!collapsed && (
+                    <div className="sidebar__brand">
+                        <h2 className="sidebar__title">
+                            UNERP
+                        </h2>
 
-            <span className="sidebar__subtitle">
-            Sistema ERP
-            </span>
-        </div>
+                        <span className="sidebar__subtitle">
+                            Sistema ERP
+                        </span>
+                    </div>
+                )}
 
-        <nav className="sidebar__nav">
-            <ul className="sidebar__list">
-            {sidebarItems.map((item) => {
-                if (
-                item.permission &&
-                !canAccess(item.permission)
-                ) {
-                return null;
-                }
-
-                return (
-                <li
-                    key={item.path}
-                    className="sidebar__item"
-                >
-                    <NavLink
-                    to={item.path}
-                    className={({ isActive }) =>
-                        [
-                        "sidebar__link",
-                        isActive &&
-                            "sidebar__link--active",
-                        ]
-                        .filter(Boolean)
-                        .join(" ")
+                <button
+                    type="button"
+                    className="sidebar__toggle"
+                    onClick={() =>
+                        setCollapsed((value) => !value)
                     }
-                    >
-                    <span className="sidebar__icon">
-                        {item.icon}
-                    </span>
+                    aria-label={
+                        collapsed
+                            ? "Expandir menú"
+                            : "Contraer menú"
+                    }
+                >
+                    {collapsed ? (
+                        <PanelLeftOpen size={20} />
+                    ) : (
+                        <PanelLeftClose size={20} />
+                    )}
+                </button>
+            </header>
 
-                    <span className="sidebar__label">
-                        {item.label}
-                    </span>
-                    </NavLink>
-                </li>
-                );
-            })}
-            </ul>
-        </nav>
+            <nav className="sidebar__nav">
+                <ul className="sidebar__list">
+                    {visibleItems.map((item) => (
+                        <SidebarItem
+                            key={item.id}
+                            item={item}
+                            collapsed={collapsed}
+                            expanded={expandedItems.includes(
+                                item.id
+                            )}
+                            onToggle={toggleItem}
+                        />
+                    ))}
+                </ul>
+            </nav>
         </aside>
     );
 }
