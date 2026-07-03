@@ -8,7 +8,7 @@ import Input from "../../../shared/components/Input";
 import Spinner from "../../../shared/components/Spinner";
 
 import { getInitializationStatus } from "../services/authApi";
-import { createUser } from "../../user/services/userApi";
+import { createUser } from "../../user/api/userApi";
 
 import "./SetupAdminPage.css";
 
