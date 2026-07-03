@@ -7,3 +7,9 @@ export async function createUser(request: CreateUserRequest): Promise<User> {
 
     return response.data;
 }
+
+export async function getAllUsers(): Promise<User[]> {
+    const response = await apiClient.get<User[]>(`user/all`);
+
+    return response.data;
+}
