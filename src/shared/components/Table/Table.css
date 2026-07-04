@@ -1,88 +1,88 @@
 .table {
+    width: 100%;
     display: flex;
     flex-direction: column;
-
-    width: 100%;
-
-    gap: var(--space-lg);
+    gap: 12px;
 }
 
 .table__container {
+    width: 100%;
     overflow-x: auto;
-
-    border: 1px solid var(--color-border);
-
-    border-radius: var(--radius-lg);
-
-    background: var(--color-surface);
-
-    box-shadow: var(--shadow-sm);
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
 }
 
-.table__container table {
+.table table {
     width: 100%;
-
     border-collapse: collapse;
+    font-size: 14px;
+}
 
-    min-width: 800px;
+.table__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.table__header {
+    background: #f9fafb;
+}
+
+.table__header--sticky {
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .table__head {
-    background: var(--color-surface-secondary);
-}
-
-.table__head--sticky {
-    position: sticky;
-
-    top: 0;
-
-    z-index: 5;
-}
-
-.table__row {
-    transition: background-color var(--transition-fast);
-}
-
-.table__row--hover:hover {
-    background: var(--color-hover);
-}
-
-.table__row--striped {
-    background: var(--color-surface-secondary);
-}
-
-.table__row--selected {
-    background: rgba(37, 99, 235, .08);
-}
-
-.table__cell {
-    padding: var(--space-md);
-
-    border-bottom: 1px solid var(--color-border);
-
-    color: var(--color-text);
-
-    font-size: var(--font-md);
-
-    vertical-align: middle;
-}
-
-.table__cell--head {
-    font-weight: var(--font-weight-semibold);
-
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
     user-select: none;
-
-    white-space: nowrap;
 }
 
-.table__cell--checkbox {
-    width: 56px;
-
+.table__head--center {
     text-align: center;
 }
 
-.table__cell--left {
-    text-align: left;
+.table__head--right {
+    text-align: right;
+}
+
+.table__head--sortable {
+    cursor: pointer;
+}
+
+.table__head--sortable:hover {
+    background: #f3f4f6;
+}
+
+.table__sort {
+    margin-left: 6px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.table__row--hoverable:hover {
+    background: #f9fafb;
+}
+
+.table__row--striped {
+    background: #fcfcfc;
+}
+
+.table__row--selected {
+    background: #e0f2fe;
+}
+
+.table__cell {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #111827;
 }
 
 .table__cell--center {
@@ -93,110 +93,40 @@
     text-align: right;
 }
 
-.table__cell--sortable {
-    cursor: pointer;
-}
-
-.table__cell--sortable:hover {
-    background: var(--color-hover);
-}
-
-.table__header-content {
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: var(--space-xs);
-}
-
-.table__sort {
-    font-size: .75rem;
-
-    color: var(--color-primary);
-}
-
-.table__loading {
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    min-height: 260px;
+.table__checkbox {
+    width: 40px;
+    text-align: center;
 }
 
 .table-pagination {
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
-    gap: var(--space-lg);
-
-    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
 }
 
 .table-pagination__info {
-    color: var(--color-text-secondary);
-
-    font-size: var(--font-sm);
-}
-
-.table-pagination__controls {
     display: flex;
-
-    align-items: center;
-
-    gap: var(--space-sm);
-
-    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    color: #6b7280;
 }
 
-.table-pagination__rows {
+.table-pagination__actions {
     display: flex;
-
-    align-items: center;
-
-    gap: var(--space-sm);
+    gap: 6px;
 }
 
-.table-pagination__rows select {
-    padding: .45rem .75rem;
-
-    border: 1px solid var(--color-border);
-
-    border-radius: var(--radius-md);
-
-    background: var(--color-surface);
-
-    font: inherit;
+.table-pagination__size {
+    width: 80px;
 }
 
-.table-pagination__page {
-    min-width: 120px;
-
+/* EMPTY STATE */
+.table__empty {
+    padding: 40px;
     text-align: center;
-
-    color: var(--color-text-secondary);
-
-    font-size: var(--font-sm);
-}
-
-@media (max-width: var(--breakpoint-md)) {
-
-    .table-pagination {
-
-        flex-direction: column;
-
-        align-items: stretch;
-
-    }
-
-    .table-pagination__controls {
-
-        justify-content: center;
-
-    }
-
 }

@@ -1,8 +1,13 @@
 export { default } from "./Table";
 
+export { default as TableHeader } from "./TableHeader";
+export { default as TableRow } from "./TableRow";
+export { default as TablePagination } from "./TablePagination";
+
 export type {
-    TableAlign,
     TableColumn,
+    TablePagination as TablePaginationType,
     TableEmptyState,
-    TablePagination,
+    TableSortDirection,
+    TableAlign,
 } from "./types";

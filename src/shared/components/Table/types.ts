@@ -5,7 +5,12 @@ export type TableAlign =
     | "center"
     | "right";
 
+export type TableSortDirection =
+    | "asc"
+    | "desc";
+
 export interface TableColumn<T> {
+
     key: keyof T | string;
 
     title: ReactNode;
@@ -21,6 +26,7 @@ export interface TableColumn<T> {
         index: number
     ) => ReactNode;
 }
+
 export interface TablePagination {
 
     page: number;

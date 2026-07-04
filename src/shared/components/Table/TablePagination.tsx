@@ -1,17 +1,36 @@
 import Button from "../Button";
+import Select from "../Select";
 
-import type { TablePagination as Pagination } from "./types";
+import type { TablePagination as TablePaginationProps } from "./types";
 
-interface TablePaginationProps {
-    pagination: Pagination;
+interface Props {
 
-    rowsPerPageOptions?: number[];
+    pagination: TablePaginationProps;
 }
+
+const PAGE_SIZE_OPTIONS = [
+    {
+        value: "10",
+        label: "10"
+    },
+    {
+        value: "20",
+        label: "20"
+    },
+    {
+        value: "50",
+        label: "50"
+    },
+    {
+        value: "100",
+        label: "100"
+    },
+];
 
 export default function TablePagination({
     pagination,
-    rowsPerPageOptions = [10, 20, 50, 100],
-    }: TablePaginationProps) {
+}: Props) {
+
     const {
         page,
         pageSize,
@@ -21,93 +40,95 @@ export default function TablePagination({
         onPageSizeChange,
     } = pagination;
 
-    const firstItem =
-        totalElements === 0
-        ? 0
-        : page * pageSize + 1;
+    const firstPage =
+        page <= 1;
 
-    const lastItem = Math.min(
-        (page + 1) * pageSize,
-        totalElements
-    );
+    const lastPage =
+        page >= totalPages;
 
     return (
         <div className="table-pagination">
-        <div className="table-pagination__info">
-            Mostrando {firstItem} - {lastItem} de{" "}
-            {totalElements} registros
-        </div>
 
-        <div className="table-pagination__controls">
-            <div className="table-pagination__rows">
-            <label htmlFor="rows-per-page">
-                Filas por página
-            </label>
+            <div className="table-pagination__info">
 
-            <select
-                id="rows-per-page"
-                value={pageSize}
-                onChange={(event) =>
-                onPageSizeChange?.(
-                    Number(event.target.value)
-                )
-                }
-            >
-                {rowsPerPageOptions.map((size) => (
-                <option
-                    key={size}
-                    value={size}
-                >
-                    {size}
-                </option>
-                ))}
-            </select>
+                <span>
+                    {totalElements} registros
+                </span>
+
+                <span>
+                    Página {page} de {totalPages}
+                </span>
+
             </div>
 
-            <Button
-            variant="secondary"
-            size="sm"
-            disabled={page === 0}
-            onClick={() => onPageChange(0)}
-            aria-label="Primera página"
-            >
-            «
-            </Button>
+            {onPageSizeChange && (
 
-            <Button
-            variant="secondary"
-            size="sm"
-            disabled={page === 0}
-            onClick={() => onPageChange(page - 1)}
-            aria-label="Página anterior"
-            >
-            ‹
-            </Button>
+                <div className="table-pagination__size">
 
-            <span className="table-pagination__page">
-            Página {page + 1} de {Math.max(totalPages, 1)}
-            </span>
+                    <Select
+                        value={pageSize}
+                        options={PAGE_SIZE_OPTIONS}
+                        onChange={(event) =>
+                            onPageSizeChange(
+                                Number(
+                                    event.target.value
+                                )
+                            )
+                        }
+                    />
 
-            <Button
-            variant="secondary"
-            size="sm"
-            disabled={page >= totalPages - 1}
-            onClick={() => onPageChange(page + 1)}
-            aria-label="Página siguiente"
-            >
-            ›
-            </Button>
+                </div>
 
-            <Button
-            variant="secondary"
-            size="sm"
-            disabled={page >= totalPages - 1}
-            onClick={() => onPageChange(totalPages - 1)}
-            aria-label="Última página"
-            >
-            »
-            </Button>
-        </div>
+            )}
+
+            <div className="table-pagination__actions">
+
+                <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={firstPage}
+                    onClick={() =>
+                        onPageChange(1)
+                    }
+                >
+                    {"<<"}
+                </Button>
+
+                <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={firstPage}
+                    onClick={() =>
+                        onPageChange(page - 1)
+                    }
+                >
+                    {"<"}
+                </Button>
+
+                <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={lastPage}
+                    onClick={() =>
+                        onPageChange(page + 1)
+                    }
+                >
+                    {">"}
+                </Button>
+
+                <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={lastPage}
+                    onClick={() =>
+                        onPageChange(totalPages)
+                    }
+                >
+                    {">>"}
+                </Button>
+
+            </div>
+
         </div>
     );
 }

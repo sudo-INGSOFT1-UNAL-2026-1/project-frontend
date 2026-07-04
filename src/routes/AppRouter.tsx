@@ -8,7 +8,7 @@ import SetupAdminPage from "../modules/auth/pages/SetupAdminPage/SetupAdminPage"
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import Layout from "../shared/components/Layout/Layout";
-import UsersPage from "../modules/user/pages/UsersPage";
+import UsersPage from "../modules/user/pages/UsersPage/UsersPage";
 import InventoryPage from "../modules/inventory/pages/InventoryPage";
 import PurchasesPage from "../modules/purchases/pages/PurchasesPage";
 import SalesPage from "../modules/sales/pages/SalesPage";

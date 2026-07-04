@@ -8,15 +8,19 @@ import "./Layout.css";
 export default function Layout() {
     return (
         <div className="layout">
-        <Sidebar />
 
-        <div className="layout__main">
-            <Header />
+            <Sidebar />
 
-            <main className="layout__content">
-            <Outlet />
-            </main>
-        </div>
+            <div className="layout__main">
+
+                <Header />
+
+                <main className="layout__content">
+                    <Outlet />
+                </main>
+
+            </div>
+
         </div>
     );
 }

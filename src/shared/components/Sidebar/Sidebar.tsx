@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import {
+    PanelLeftClose,
+    PanelLeftOpen,
+} from "lucide-react";
 
 import SidebarItem from "./SidebarItem";
 import { sidebarItems } from "./sidebarItems";
@@ -9,9 +13,12 @@ import "./Sidebar.css";
 const STORAGE_KEY = "sidebar-collapsed";
 
 export default function Sidebar() {
-    const [collapsed, setCollapsed] = useState(() => {
-        return localStorage.getItem(STORAGE_KEY) === "true";
-    });
+
+    const location = useLocation();
+
+    const [collapsed, setCollapsed] = useState(() =>
+        localStorage.getItem(STORAGE_KEY) === "true"
+    );
 
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
@@ -22,20 +29,44 @@ export default function Sidebar() {
         );
     }, [collapsed]);
 
+    useEffect(() => {
+
+        const currentItem = sidebarItems.find((item) => {
+
+            if (!item.children?.length) {
+                return false;
+            }
+
+            return item.children.some((child) =>
+                typeof child.path === "string" &&
+                location.pathname.startsWith(child.path)
+            );
+
+        });
+
+        if (currentItem) {
+            setExpandedItems([currentItem.id]);
+        }
+
+    }, [location.pathname]);
+
     const visibleItems = useMemo(
         () => sidebarItems,
         []
     );
 
     function toggleItem(id: string) {
+
         setExpandedItems((current) =>
             current.includes(id)
-                ? current.filter((item) => item !== id)
-                : [...current, id]
+                ? []
+                : [id]
         );
+
     }
 
     return (
+
         <aside
             className={[
                 "sidebar",
@@ -45,9 +76,12 @@ export default function Sidebar() {
                 .filter(Boolean)
                 .join(" ")}
         >
+
             <header className="sidebar__header">
+
                 {!collapsed && (
                     <div className="sidebar__brand">
+
                         <h2 className="sidebar__title">
                             UNERP
                         </h2>
@@ -55,6 +89,7 @@ export default function Sidebar() {
                         <span className="sidebar__subtitle">
                             Sistema ERP
                         </span>
+
                     </div>
                 )}
 
@@ -76,11 +111,15 @@ export default function Sidebar() {
                         <PanelLeftClose size={20} />
                     )}
                 </button>
+
             </header>
 
             <nav className="sidebar__nav">
+
                 <ul className="sidebar__list">
+
                     {visibleItems.map((item) => (
+
                         <SidebarItem
                             key={item.id}
                             item={item}
@@ -90,9 +129,15 @@ export default function Sidebar() {
                             )}
                             onToggle={toggleItem}
                         />
+
                     ))}
+
                 </ul>
+
             </nav>
+
         </aside>
+
     );
+
 }
