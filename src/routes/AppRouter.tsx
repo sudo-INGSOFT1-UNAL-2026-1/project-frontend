@@ -9,7 +9,9 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import Layout from "../shared/components/Layout/Layout";
 import UsersPage from "../modules/user/pages/UsersPage/UsersPage";
-import InventoryPage from "../modules/inventory/pages/InventoryPage";
+import ProductsPage from "../modules/inventory/pages/ProductsPage";
+import CreateProductPage from "../modules/inventory/pages/CreateProductPage";
+import EditProductPage from "../modules/inventory/pages/EditProductPage/EditProductPage";
 import PurchasesPage from "../modules/purchases/pages/PurchasesPage";
 import SalesPage from "../modules/sales/pages/SalesPage";
 import CreateUserPage from "../modules/user/pages/CreateUserPage/CreateUserPage";
@@ -68,12 +70,38 @@ export default function AppRouter() {
                     </Route>
 
                     <Route
-                        path="/inventory"
-                        element={<InventoryPage />}
-                    />                    <Route
+                        path="/inventory">
+                        
+                        <Route
+                            path="products"
+                            element={
+                                <ProtectedRoute>
+                                    <ProductsPage />
+                                </ProtectedRoute>
+                                }
+                        />
+                        <Route
+                            path="products/create"
+                            element={
+                                <ProtectedRoute>
+                                    <CreateProductPage />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="products/edit/:productId"
+                            element={
+                                <ProtectedRoute>
+                                    <EditProductPage />
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Route>
+                    <Route
                         path="/purchases"
                         element={<PurchasesPage />}
-                    />                    <Route
+                    />
+                    <Route
                         path="/sales"
                         element={<SalesPage />}
                     />
