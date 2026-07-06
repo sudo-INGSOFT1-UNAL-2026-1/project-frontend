@@ -1,6 +1,6 @@
 import type { LocalDate } from "./Product";
 
-export interface CreateProductRequest {
+export interface ProductRequest {
 
     name: string;
 
