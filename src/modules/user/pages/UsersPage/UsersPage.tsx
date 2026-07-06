@@ -87,7 +87,7 @@ export default function UsersPage() {
                     size="sm"
                     variant="secondary"
                     onClick={() =>
-                        navigate(`/users/${user.id}/edit`)
+                        navigate(`/users/edit/${user.id}`)
                     }
                 >
                     <SquarePen size={16} />

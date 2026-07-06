@@ -13,7 +13,7 @@ import InventoryPage from "../modules/inventory/pages/InventoryPage";
 import PurchasesPage from "../modules/purchases/pages/PurchasesPage";
 import SalesPage from "../modules/sales/pages/SalesPage";
 import CreateUserPage from "../modules/user/pages/CreateUserPage/CreateUserPage";
-import EditUserPage from "../modules/user/pages/EditUserPage";
+import EditUserPage from "../modules/user/pages/EditUserPage/EditUserPage";
 
 export default function AppRouter() {
     return(
