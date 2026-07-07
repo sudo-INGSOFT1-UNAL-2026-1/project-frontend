@@ -10,11 +10,11 @@ import PublicRoute from "./PublicRoute";
 import AuthorizationRoute from "./AuthorizationRoute";
 import Layout from "../shared/components/Layout/Layout";
 import UsersPage from "../modules/user/pages/UsersPage/UsersPage";
-import ProductsPage from "../modules/inventory/product/pages/ProductsPage";
-import CreateProductPage from "../modules/inventory/product/pages/CreateProductPage";
+import ProductsPage from "../modules/inventory/product/pages/ProductsPage/ProductsPage.tsx";
+import CreateProductPage from "../modules/inventory/product/pages/CreateProductPage/CreateProductPage.tsx";
 import EditProductPage from "../modules/inventory/product/pages/EditProductPage/EditProductPage";
 import CreateSupplierPage from "../modules/purchases/supplier/pages/CreateSupplierPage/CreateSupplierPage.tsx";
-import EditSupplierPage from "../modules/purchases/supplier/pages/EditSupplierPage";
+import EditSupplierPage from "../modules/purchases/supplier/pages/EditSupplierPage/EditSupplierPage.tsx";
 import SuppliersPage from "../modules/purchases/supplier/pages/SuppliersPage/SuppliersPage";
 import SalesPage from "../modules/sales/pages/SalesPage";
 import CreateUserPage from "../modules/user/pages/CreateUserPage/CreateUserPage";
@@ -149,7 +149,7 @@ export default function AppRouter() {
                             />
 
                             <Route
-                                path="suppliers/edit/:Id"
+                                path="suppliers/edit/:supplierId"
                                 element={
                                     <ProtectedRoute>
                                         <AuthorizationRoute permission="canAccessPurchases">

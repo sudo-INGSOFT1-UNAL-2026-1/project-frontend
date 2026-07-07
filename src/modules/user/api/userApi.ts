@@ -38,4 +38,5 @@ export async function deactivateUser(request: UserIdRequest): Promise<User> {
     const response = await apiClient.put<User>(`user/deactivate`, request);
 
     return response.data;
+    
 }   
