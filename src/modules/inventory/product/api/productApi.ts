@@ -1,4 +1,4 @@
-import { apiClient } from "../../../api/axios";
+import { apiClient } from "../../../../api/axios";
 
 import type { Product } from "../types/Product";
 import type { ProductRequest } from "../types/ProductRequest";

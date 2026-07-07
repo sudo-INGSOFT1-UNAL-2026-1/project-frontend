@@ -12,41 +12,72 @@ import "./Sidebar.css";
 
 const STORAGE_KEY = "sidebar-collapsed";
 
+function findExpandedParents(
+    items: typeof sidebarItems,
+    pathname: string,
+    parents: string[] = []
+): string[] {
+
+    for (const item of items) {
+
+        if (
+            item.path &&
+            pathname.startsWith(item.path)
+        ) {
+            return parents;
+        }
+
+        if (item.children?.length) {
+
+            const result = findExpandedParents(
+                item.children,
+                pathname,
+                [...parents, item.id]
+            );
+
+            if (result.length) {
+                return result;
+            }
+
+        }
+
+    }
+
+    return [];
+
+}
+
 export default function Sidebar() {
 
     const location = useLocation();
 
-    const [collapsed, setCollapsed] = useState(() =>
-        localStorage.getItem(STORAGE_KEY) === "true"
+    const [collapsed, setCollapsed] = useState(
+        () =>
+            localStorage.getItem(
+                STORAGE_KEY
+            ) === "true"
     );
 
-    const [expandedItems, setExpandedItems] = useState<string[]>([]);
+    const [expandedItems, setExpandedItems] =
+        useState<string[]>([]);
 
     useEffect(() => {
+
         localStorage.setItem(
             STORAGE_KEY,
             String(collapsed)
         );
+
     }, [collapsed]);
 
     useEffect(() => {
 
-        const currentItem = sidebarItems.find((item) => {
-
-            if (!item.children?.length) {
-                return false;
-            }
-
-            return item.children.some((child) =>
-                typeof child.path === "string" &&
-                location.pathname.startsWith(child.path)
-            );
-
-        });
-
-        if (currentItem) {
-            setExpandedItems([currentItem.id]);
-        }
+        setExpandedItems(
+            findExpandedParents(
+                sidebarItems,
+                location.pathname
+            )
+        );
 
     }, [location.pathname]);
 
@@ -57,11 +88,44 @@ export default function Sidebar() {
 
     function toggleItem(id: string) {
 
-        setExpandedItems((current) =>
-            current.includes(id)
-                ? []
-                : [id]
-        );
+        setExpandedItems((current) => {
+
+            if (current.includes(id)) {
+
+                return current.filter(
+                    (item) => item !== id
+                );
+
+            }
+
+            const topLevelIds =
+                sidebarItems.map(
+                    (item) => item.id
+                );
+
+            const isTopLevel =
+                topLevelIds.includes(id);
+
+            if (isTopLevel) {
+
+                return [
+                    ...current.filter(
+                        (item) =>
+                            !topLevelIds.includes(
+                                item
+                            )
+                    ),
+                    id,
+                ];
+
+            }
+
+            return [
+                ...current,
+                id,
+            ];
+
+        });
 
     }
 
@@ -80,6 +144,7 @@ export default function Sidebar() {
             <header className="sidebar__header">
 
                 {!collapsed && (
+
                     <div className="sidebar__brand">
 
                         <h2 className="sidebar__title">
@@ -91,13 +156,16 @@ export default function Sidebar() {
                         </span>
 
                     </div>
+
                 )}
 
                 <button
                     type="button"
                     className="sidebar__toggle"
                     onClick={() =>
-                        setCollapsed((value) => !value)
+                        setCollapsed(
+                            (value) => !value
+                        )
                     }
                     aria-label={
                         collapsed

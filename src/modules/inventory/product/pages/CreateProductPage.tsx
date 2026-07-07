@@ -1,24 +1,16 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
-import {
-    deleteProduct,
-    getProductById,
-    updateProduct,
-} from "../../services/productService";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { createProduct } from "../services/productService";
 
 import { getAllSuppliers } from "../../../purchases/supplier/services/supplierService";
 
-import type { Product } from "../../types/Product";
 import type { Supplier } from "../../../purchases/supplier/types/Supplier";
 
-export default function EditProductPage() {
-
-    const { id } = useParams();
+export default function CreateProductPage() {
 
     const navigate = useNavigate();
-
-    const [product, setProduct] = useState<Product | null>(null);
 
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
 
@@ -38,45 +30,9 @@ export default function EditProductPage() {
 
     useEffect(() => {
 
-        loadProduct();
-
         loadSuppliers();
 
-    }, [id]);
-
-    async function loadProduct() {
-
-        if (!id) return;
-
-        try {
-
-            const response = await getProductById(Number(id));
-
-            setProduct(response);
-
-            setName(response.name);
-
-            setDescription(response.description);
-
-            setStock(response.stock);
-
-            setPrice(response.price);
-
-            setBatch(response.batch);
-
-            setExpirationDate(response.expirationDate);
-
-            setSupplierId(response.supplierId);
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert("Error al cargar el producto.");
-
-        }
-
-    }
+    }, []);
 
     async function loadSuppliers() {
 
@@ -96,54 +52,21 @@ export default function EditProductPage() {
 
     }
 
-    async function handleUpdateProduct() {
-
-        if (!product) return;
+    async function handleCreateProduct() {
 
         try {
 
-            const response = await updateProduct(
-                product.id,
-                {
-                    name,
-                    description,
-                    stock,
-                    price,
-                    batch,
-                    expirationDate,
-                    supplierId,
-                },
-            );
+            await createProduct({
+                name,
+                description,
+                stock,
+                price,
+                batch,
+                expirationDate,
+                supplierId,
+            });
 
-            setProduct(response);
-
-            alert("Producto actualizado correctamente.");
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert("Error al actualizar el producto.");
-
-        }
-
-    }
-
-    async function handleDeleteProduct() {
-
-        if (!product) return;
-
-        const confirmed = window.confirm(
-            "¿Estás seguro de que quieres eliminar este producto?"
-        );
-
-        if (!confirmed) return;
-
-        try {
-
-            await deleteProduct(product.id);
-
-            alert("Producto eliminado correctamente.");
+            alert("Producto creado exitosamente.");
 
             navigate("/inventory/products");
 
@@ -151,15 +74,9 @@ export default function EditProductPage() {
 
             console.error(error);
 
-            alert("Error al eliminar el producto.");
+            alert("No fue posible crear el producto.");
 
         }
-
-    }
-
-    if (!product) {
-
-        return <p>Loading...</p>;
 
     }
 
@@ -167,13 +84,13 @@ export default function EditProductPage() {
 
         <div>
 
-            <h1>Editar Producto</h1>
+            <h1>Crear Producto</h1>
 
             <hr />
 
             <div>
 
-                <label>Nombre</label>
+                <label>Nombre:</label>
 
                 <br />
 
@@ -189,7 +106,7 @@ export default function EditProductPage() {
 
             <div>
 
-                <label>Descripción</label>
+                <label>Descripción:</label>
 
                 <br />
 
@@ -204,7 +121,7 @@ export default function EditProductPage() {
 
             <div>
 
-                <label>Stock</label>
+                <label>Stock:</label>
 
                 <br />
 
@@ -221,7 +138,7 @@ export default function EditProductPage() {
 
             <div>
 
-                <label>Precio</label>
+                <label>Precio:</label>
 
                 <br />
 
@@ -239,7 +156,7 @@ export default function EditProductPage() {
 
             <div>
 
-                <label>Batch</label>
+                <label>Lote:</label>
 
                 <br />
 
@@ -255,7 +172,7 @@ export default function EditProductPage() {
 
             <div>
 
-                <label>Fecha de Expiración</label>
+                <label>Fecha de vencimiento:</label>
 
                 <br />
 
@@ -271,7 +188,7 @@ export default function EditProductPage() {
 
             <div>
 
-                <label>Proveedor</label>
+                <label>Proveedor:</label>
 
                 <br />
 
@@ -301,18 +218,14 @@ export default function EditProductPage() {
 
             <br />
 
-            <button onClick={handleUpdateProduct}>
-                Actualizar Producto
-            </button>
-
-            <button onClick={handleDeleteProduct}>
-                Eliminar Producto
+            <button onClick={handleCreateProduct}>
+                Crear
             </button>
 
             <button
                 onClick={() => navigate("/inventory/products")}
             >
-                Atrás
+                Volver
             </button>
 
         </div>
@@ -320,4 +233,3 @@ export default function EditProductPage() {
     );
 
 }
-

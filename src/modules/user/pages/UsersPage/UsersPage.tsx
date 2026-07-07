@@ -62,7 +62,7 @@ export default function UsersPage() {
         {
             key: "role",
             title: "Rol",
-            render: (user) => roleLabels[user.role as keyof typeof roleLabels],
+            render: (user) => roleLabels[user.roleName as keyof typeof roleLabels],
         },
         {
             key: "state",

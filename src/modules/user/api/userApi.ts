@@ -18,12 +18,7 @@ export async function getAllUsers(): Promise<User[]> {
 
 export async function changeUserRole(request: ChangeUserRoleRequest): Promise<User> {
 
-    const response = await apiClient.put<User>(`user/change-role`, null, {
-        params: {
-            userId: request.userId,
-            newRoleName: request.newRoleName,
-        },
-    });
+    const response = await apiClient.put<User>(`user/change-role`, request);
     return response.data;
 }
 
@@ -33,20 +28,14 @@ export async function getUserById(userId: number): Promise<User> {
 }
 
 export async function activateUser(request: UserIdRequest): Promise<User> {
-    const response = await apiClient.put<User>(`user/activate`, null, {
-        params: {
-            userId: request.userId,
-        },
-    });
+    const response = await apiClient.put<User>(`user/activate`, request);
     
     return response.data;
 }
 
 export async function deactivateUser(request: UserIdRequest): Promise<User> {
-    const response = await apiClient.put<User>(`user/deactivate`, null, {
-        params: {
-            userId: request.userId,
-        },
-    });
+    
+    const response = await apiClient.put<User>(`user/deactivate`, request);
+
     return response.data;
 }   

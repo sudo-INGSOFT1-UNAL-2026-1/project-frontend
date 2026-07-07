@@ -1,16 +1,24 @@
-
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { createProduct } from "../services/productService";
+import {
+    deleteProduct,
+    getProductById,
+    updateProduct,
+} from "../../services/productService";
 
-import { getAllSuppliers } from "../../purchases/supplier/services/supplierService";
+import { getAllSuppliers } from "../../../../purchases/supplier/services/supplierService";
 
-import type { Supplier } from "../../purchases/supplier/types/Supplier";
+import type { Product } from "../../types/Product";
+import type { Supplier } from "../../../../purchases/supplier/types/Supplier";
 
-export default function CreateProductPage() {
+export default function EditProductPage() {
+
+    const { id } = useParams();
 
     const navigate = useNavigate();
+
+    const [product, setProduct] = useState<Product | null>(null);
 
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
 
@@ -30,9 +38,45 @@ export default function CreateProductPage() {
 
     useEffect(() => {
 
+        loadProduct();
+
         loadSuppliers();
 
-    }, []);
+    }, [id]);
+
+    async function loadProduct() {
+
+        if (!id) return;
+
+        try {
+
+            const response = await getProductById(Number(id));
+
+            setProduct(response);
+
+            setName(response.name);
+
+            setDescription(response.description);
+
+            setStock(response.stock);
+
+            setPrice(response.price);
+
+            setBatch(response.batch);
+
+            setExpirationDate(response.expirationDate);
+
+            setSupplierId(response.supplierId);
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Error al cargar el producto.");
+
+        }
+
+    }
 
     async function loadSuppliers() {
 
@@ -52,21 +96,54 @@ export default function CreateProductPage() {
 
     }
 
-    async function handleCreateProduct() {
+    async function handleUpdateProduct() {
+
+        if (!product) return;
 
         try {
 
-            await createProduct({
-                name,
-                description,
-                stock,
-                price,
-                batch,
-                expirationDate,
-                supplierId,
-            });
+            const response = await updateProduct(
+                product.id,
+                {
+                    name,
+                    description,
+                    stock,
+                    price,
+                    batch,
+                    expirationDate,
+                    supplierId,
+                },
+            );
 
-            alert("Producto creado exitosamente.");
+            setProduct(response);
+
+            alert("Producto actualizado correctamente.");
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Error al actualizar el producto.");
+
+        }
+
+    }
+
+    async function handleDeleteProduct() {
+
+        if (!product) return;
+
+        const confirmed = window.confirm(
+            "¿Estás seguro de que quieres eliminar este producto?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+
+            await deleteProduct(product.id);
+
+            alert("Producto eliminado correctamente.");
 
             navigate("/inventory/products");
 
@@ -74,9 +151,15 @@ export default function CreateProductPage() {
 
             console.error(error);
 
-            alert("No fue posible crear el producto.");
+            alert("Error al eliminar el producto.");
 
         }
+
+    }
+
+    if (!product) {
+
+        return <p>Loading...</p>;
 
     }
 
@@ -84,13 +167,13 @@ export default function CreateProductPage() {
 
         <div>
 
-            <h1>Crear Producto</h1>
+            <h1>Editar Producto</h1>
 
             <hr />
 
             <div>
 
-                <label>Nombre:</label>
+                <label>Nombre</label>
 
                 <br />
 
@@ -106,7 +189,7 @@ export default function CreateProductPage() {
 
             <div>
 
-                <label>Descripción:</label>
+                <label>Descripción</label>
 
                 <br />
 
@@ -121,7 +204,7 @@ export default function CreateProductPage() {
 
             <div>
 
-                <label>Stock:</label>
+                <label>Stock</label>
 
                 <br />
 
@@ -138,7 +221,7 @@ export default function CreateProductPage() {
 
             <div>
 
-                <label>Precio:</label>
+                <label>Precio</label>
 
                 <br />
 
@@ -156,7 +239,7 @@ export default function CreateProductPage() {
 
             <div>
 
-                <label>Lote:</label>
+                <label>Batch</label>
 
                 <br />
 
@@ -172,7 +255,7 @@ export default function CreateProductPage() {
 
             <div>
 
-                <label>Fecha de vencimiento:</label>
+                <label>Fecha de Expiración</label>
 
                 <br />
 
@@ -188,7 +271,7 @@ export default function CreateProductPage() {
 
             <div>
 
-                <label>Proveedor:</label>
+                <label>Proveedor</label>
 
                 <br />
 
@@ -218,14 +301,18 @@ export default function CreateProductPage() {
 
             <br />
 
-            <button onClick={handleCreateProduct}>
-                Crear
+            <button onClick={handleUpdateProduct}>
+                Actualizar Producto
+            </button>
+
+            <button onClick={handleDeleteProduct}>
+                Eliminar Producto
             </button>
 
             <button
                 onClick={() => navigate("/inventory/products")}
             >
-                Volver
+                Atrás
             </button>
 
         </div>
@@ -233,3 +320,4 @@ export default function CreateProductPage() {
     );
 
 }
+

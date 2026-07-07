@@ -6,6 +6,7 @@ import { canAccess } from "../../utils/authorization";
 import type { SidebarItem as SidebarItemType } from "./types";
 
 interface SidebarItemProps {
+
     item: SidebarItemType;
 
     collapsed: boolean;
@@ -15,6 +16,7 @@ interface SidebarItemProps {
     level?: number;
 
     onToggle: (id: string) => void;
+
 }
 
 export default function SidebarItem({
@@ -39,23 +41,31 @@ export default function SidebarItem({
     const hasChildren =
         (item.children?.length ?? 0) > 0;
 
-    const isParentActive =
-        hasChildren &&
-        item.children!.some((child) => {
+    function isItemActive(
+        currentItem: SidebarItemType
+    ): boolean {
 
-            if (!child.path) {
-                return false;
-            }
+        if (
+            currentItem.path &&
+            (
+                location.pathname === currentItem.path ||
+                location.pathname.startsWith(
+                    `${currentItem.path}/`
+                )
+            )
+        ) {
+            return true;
+        }
 
-            if (location.pathname === child.path) {
-                return true;
-            }
+        return (
+            currentItem.children?.some(
+                isItemActive
+            ) ?? false
+        );
 
-            return location.pathname.startsWith(
-                `${child.path}/`
-            );
+    }
 
-        });
+    const isActive = isItemActive(item);
 
     return (
         <li className="sidebar__item">
@@ -67,7 +77,7 @@ export default function SidebarItem({
                         type="button"
                         className={[
                             "sidebar__link",
-                            isParentActive &&
+                            isActive &&
                                 "sidebar__link--active",
                         ]
                             .filter(Boolean)
@@ -109,37 +119,47 @@ export default function SidebarItem({
 
                     </button>
 
-                    {!collapsed && expanded && (
+                    {!collapsed &&
+                        expanded && (
 
-                        <ul className="sidebar__sublist">
+                            <ul className="sidebar__sublist">
 
-                            {item.children!
-                                .filter(
-                                    (child) =>
-                                        !child.permission ||
-                                        canAccess(
-                                            child.permission
-                                        )
-                                )
-                                .map((child) => (
+                                {item.children!
+                                    .filter(
+                                        (child) =>
+                                            !child.permission ||
+                                            canAccess(
+                                                child.permission
+                                            )
+                                    )
+                                    .map((child) => (
 
-                                    <SidebarItem
-                                        key={child.id}
-                                        item={child}
-                                        collapsed={collapsed}
-                                        expanded={false}
-                                        level={level + 1}
-                                        onToggle={onToggle}
-                                    />
+                                        <SidebarItem
+                                            key={child.id}
+                                            item={child}
+                                            collapsed={
+                                                collapsed
+                                            }
+                                            expanded={
+                                                expanded
+                                            }
+                                            level={
+                                                level + 1
+                                            }
+                                            onToggle={
+                                                onToggle
+                                            }
+                                        />
 
-                                ))}
+                                    ))}
 
-                        </ul>
+                            </ul>
 
-                    )}
+                        )}
 
                 </>
             ) : (
+
                 <NavLink
                     to={item.path!}
                     end
@@ -164,14 +184,18 @@ export default function SidebarItem({
                     </span>
 
                     {!collapsed && (
+
                         <span className="sidebar__label">
                             {item.label}
                         </span>
+
                     )}
 
                 </NavLink>
+
             )}
 
         </li>
     );
+
 }
