@@ -16,9 +16,11 @@ import EditProductPage from "../modules/inventory/product/pages/EditProductPage/
 import CreateSupplierPage from "../modules/purchases/supplier/pages/CreateSupplierPage/CreateSupplierPage.tsx";
 import EditSupplierPage from "../modules/purchases/supplier/pages/EditSupplierPage/EditSupplierPage.tsx";
 import SuppliersPage from "../modules/purchases/supplier/pages/SuppliersPage/SuppliersPage";
-import SalesPage from "../modules/sales/pages/SalesPage";
 import CreateUserPage from "../modules/user/pages/CreateUserPage/CreateUserPage";
 import EditUserPage from "../modules/user/pages/EditUserPage/EditUserPage";
+import CustomersPage from "../modules/sales/customer/pages/CustomersPage/CustomersPage.tsx";
+import CreateCustomerPage from "../modules/sales/customer/pages/CreateCustomerPage/CreateCustomerPage.tsx";
+import EditCustomerPage from "../modules/sales/customer/pages/EditCustomerPage/EditSupplierPage.tsx";
 
 export default function AppRouter() {
     return(
@@ -159,10 +161,39 @@ export default function AppRouter() {
                                 }
                             />
                     </Route>
-                    <Route
-                        path="/sales"
-                        element={<SalesPage />}
-                    />
+                    <Route path="/sales" >
+                        <Route
+                            path="customers"
+                            element={
+                                <ProtectedRoute>
+                                    <AuthorizationRoute permission="canAccessSales">
+                                        <CustomersPage />
+                                    </AuthorizationRoute>
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="customers/create"
+                            element={
+                                <ProtectedRoute>
+                                    <AuthorizationRoute permission="canAccessSales">
+                                        <CreateCustomerPage />
+                                    </AuthorizationRoute>
+                                </ProtectedRoute>
+                            }
+                        />                        
+                        <Route
+                            path="customers/edit/:customerId"
+                            element={
+                                <ProtectedRoute>
+                                    <AuthorizationRoute permission="canAccessSales">
+                                        <EditCustomerPage />
+                                    </AuthorizationRoute>
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Route>
                 </Route>
             </Routes>
         </BrowserRouter>
