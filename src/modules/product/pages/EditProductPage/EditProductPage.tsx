@@ -7,7 +7,10 @@ import {
     updateProduct,
 } from "../../services/productService";
 
+import { getAllSuppliers } from "../../../purchases/supplier/services/supplierService";
+
 import type { Product } from "../../types/Product";
+import type { Supplier } from "../../../purchases/supplier/types/Supplier";
 
 export default function EditProductPage() {
 
@@ -16,6 +19,8 @@ export default function EditProductPage() {
     const navigate = useNavigate();
 
     const [product, setProduct] = useState<Product | null>(null);
+
+    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
 
     const [name, setName] = useState("");
 
@@ -32,7 +37,11 @@ export default function EditProductPage() {
     const [supplierId, setSupplierId] = useState(0);
 
     useEffect(() => {
+
         loadProduct();
+
+        loadSuppliers();
+
     }, [id]);
 
     async function loadProduct() {
@@ -46,11 +55,17 @@ export default function EditProductPage() {
             setProduct(response);
 
             setName(response.name);
+
             setDescription(response.description);
+
             setStock(response.stock);
+
             setPrice(response.price);
+
             setBatch(response.batch);
+
             setExpirationDate(response.expirationDate);
+
             setSupplierId(response.supplierId);
 
         } catch (error) {
@@ -58,6 +73,24 @@ export default function EditProductPage() {
             console.error(error);
 
             alert("Error al cargar el producto.");
+
+        }
+
+    }
+
+    async function loadSuppliers() {
+
+        try {
+
+            const response = await getAllSuppliers();
+
+            setSuppliers(response);
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Error al cargar los proveedores.");
 
         }
 
@@ -125,7 +158,9 @@ export default function EditProductPage() {
     }
 
     if (!product) {
+
         return <p>Loading...</p>;
+
     }
 
     return (
@@ -236,16 +271,31 @@ export default function EditProductPage() {
 
             <div>
 
-                <label>Supplier ID</label>
+                <label>Proveedor</label>
 
                 <br />
 
-                <input
-                    type="number"
-                    min={1}
+                <select
                     value={supplierId}
                     onChange={(e) => setSupplierId(Number(e.target.value))}
-                />
+                >
+
+                    <option value={0}>
+                        Seleccione un proveedor
+                    </option>
+
+                    {suppliers.map((supplier) => (
+
+                        <option
+                            key={supplier.id}
+                            value={supplier.id}
+                        >
+                            {supplier.name}
+                        </option>
+
+                    ))}
+
+                </select>
 
             </div>
 
@@ -270,3 +320,4 @@ export default function EditProductPage() {
     );
 
 }
+

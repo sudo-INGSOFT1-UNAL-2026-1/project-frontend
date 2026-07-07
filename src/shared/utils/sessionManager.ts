@@ -4,11 +4,11 @@ import type { UserRole } from "../../modules/user/types/UserRole";
 const SESSION_KEY = "session";
 
 export function setSession(session: LoginResponse): void {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
 }
 
 export function getSession(): LoginResponse | null {
-    const sessionData = localStorage.getItem(SESSION_KEY);
+    const sessionData = sessionStorage.getItem(SESSION_KEY);
     
     if (sessionData) {
         return JSON.parse(sessionData) as LoginResponse;
@@ -18,7 +18,7 @@ export function getSession(): LoginResponse | null {
 }
 
 export function removeSession(): void {
-    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
 }
 
 export function getToken(): string | null {
