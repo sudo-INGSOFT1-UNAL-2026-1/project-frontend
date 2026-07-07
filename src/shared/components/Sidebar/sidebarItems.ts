@@ -5,6 +5,7 @@ import {
     ReceiptText,
     ShoppingCart,
     Truck,
+    User,
     UserPlus,
     Users,
 } from "lucide-react";
@@ -100,6 +101,25 @@ export const sidebarItems: SidebarItem[] = [
                 label: "Ventas",
                 path: "/sales",
                 icon: ReceiptText,
+            },
+            {
+                id: "customers",
+                label: "Clientes",
+                icon: User,
+                children: [
+                    {
+                        id: "customers-list",
+                        label: "Lista de clientes",
+                        path: "/sales/customers",
+                        icon: User,
+                    },
+                    {
+                        id: "customers-create",
+                        label: "Nuevo cliente",
+                        path: "/sales/customers/create",
+                        icon: UserPlus,
+                    },
+                ],
             },
         ],
     },

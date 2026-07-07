@@ -1,37 +1,84 @@
 import { useState } from "react";
+import {
+    ArrowLeft,
+    Save,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import Alert from "../../../../../shared/components/Alert";
+import Button from "../../../../../shared/components/Button";
+import Card from "../../../../../shared/components/Card";
+import Input from "../../../../../shared/components/Input";
+import Toast from "../../../../../shared/components/Toast";
+
 import { createCustomer } from "../../services/customerService";
+
+import "./CreateCustomerPage.css";
 
 export default function CreateCustomerPage() {
 
     const navigate = useNavigate();
 
-    const [name, setName] = useState("");
+    const [name, setName] =
+        useState("");
 
-    const [phone, setPhone] = useState("");
+    const [address, setAddress] =
+        useState("");
 
-    const [email, setEmail] = useState("");
+    const [error, setError] =
+        useState("");
+
+    const [toastOpen, setToastOpen] =
+        useState(false);
+
+    const [toastMessage, setToastMessage] =
+        useState("");
+
+    const [toastVariant, setToastVariant] =
+        useState<"success" | "danger">(
+            "success"
+        );
 
     async function handleCreateCustomer() {
+
+        setError("");
 
         try {
 
             await createCustomer({
                 name,
-                phone,
-                email,
+                address,
             });
 
-            alert("Cliente creado exitosamente.");
+            setToastVariant(
+                "success"
+            );
 
-            navigate("/sales/customers");
+            setToastMessage(
+                "Cliente creado correctamente."
+            );
 
-        } catch (error) {
+            setToastOpen(true);
 
-            console.error(error);
+            setTimeout(() => {
+                navigate("/sales/customers");
+            }, 1000);
 
-            alert("No fue posible crear el cliente.");
+        } catch {
+
+            setToastVariant(
+                "danger"
+            );
+
+            setToastMessage(
+                "No fue posible crear el cliente."
+            );
+
+            setToastOpen(true);
+
+            setError(
+                "Ocurrió un error al crear el cliente."
+            );
 
         }
 
@@ -39,69 +86,100 @@ export default function CreateCustomerPage() {
 
     return (
 
-        <div>
+        <div className="create-customer-page">
 
-            <h1>Crear Cliente</h1>
+            <div className="create-customer-page__header">
 
-            <hr />
+                <div>
 
-            <div>
+                    <h1 className="create-customer-page__title">
+                        Crear cliente
+                    </h1>
 
-                <label>Nombre</label>
+                    <p className="create-customer-page__subtitle">
+                        Registre un nuevo cliente en el sistema.
+                    </p>
 
-                <br />
-
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
+                </div>
 
             </div>
 
-            <br />
+            {error && (
 
-            <div>
+                <Alert
+                    variant="danger"
+                    title="Error"
+                    closable
+                    onClose={() =>
+                        setError("")
+                    }
+                >
+                    {error}
+                </Alert>
 
-                <label>Teléfono</label>
+            )}
 
-                <br />
+            <Card>
 
-                <input
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                />
+                <div className="create-customer-page__form">
 
-            </div>
+                    <Input
+                        label="Nombre"
+                        value={name}
+                        onChange={(event) =>
+                            setName(
+                                event.target.value
+                            )
+                        }
+                    />
 
-            <br />
+                    <Input
+                        label="Dirección"
+                        value={address}
+                        onChange={(event) =>
+                            setAddress(
+                                event.target.value
+                            )
+                        }
+                    />
 
-            <div>
+                </div>
 
-                <label>Correo electrónico</label>
+                <div className="create-customer-page__actions">
 
-                <br />
+                    <Button
+                        variant="secondary"
+                        onClick={() =>
+                            navigate(
+                                "/sales/customers"
+                            )
+                        }
+                    >
+                        <ArrowLeft size={18} />
+                        Volver
+                    </Button>
 
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                    <Button
+                        onClick={
+                            handleCreateCustomer
+                        }
+                    >
+                        <Save size={18} />
+                        Crear cliente
+                    </Button>
 
-            </div>
+                </div>
 
-            <br />
+            </Card>
 
-            <button onClick={handleCreateCustomer}>
-                Crear
-            </button>
-
-            <button
-                onClick={() => navigate("/sales/customers")}
-            >
-                Volver
-            </button>
+            <Toast
+                open={toastOpen}
+                variant={toastVariant}
+                message={toastMessage}
+                onClose={() =>
+                    setToastOpen(false)
+                }
+            />
 
         </div>
 

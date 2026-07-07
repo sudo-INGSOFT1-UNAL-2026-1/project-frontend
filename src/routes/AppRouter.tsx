@@ -20,7 +20,7 @@ import CreateUserPage from "../modules/user/pages/CreateUserPage/CreateUserPage"
 import EditUserPage from "../modules/user/pages/EditUserPage/EditUserPage";
 import CustomersPage from "../modules/sales/customer/pages/CustomersPage/CustomersPage.tsx";
 import CreateCustomerPage from "../modules/sales/customer/pages/CreateCustomerPage/CreateCustomerPage.tsx";
-import EditCustomerPage from "../modules/sales/customer/pages/EditCustomerPage/EditSupplierPage.tsx";
+import EditCustomerPage from "../modules/sales/customer/pages/EditCustomerPage/EditCustomerPage.tsx";
 
 export default function AppRouter() {
     return(

@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
-import { Plus, SquarePen } from "lucide-react";
+import {
+    Plus,
+    SquarePen,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Alert from "../../../../../shared/components/Alert";
-import Button from "../../../../shared/components/Button";
-import Card from "../../../../shared/components/Card";
-import EmptyState from "../../../../shared/components/EmptyState";
-import Spinner from "../../../../shared/components/Spinner";
+import Button from "../../../../../shared/components/Button";
+import Card from "../../../../../shared/components/Card";
+import EmptyState from "../../../../../shared/components/EmptyState";
+import Spinner from "../../../../../shared/components/Spinner";
 import Table from "../../../../../shared/components/Table";
 
 import { getAllCustomers } from "../../services/customerService";
 
 import type { Customer } from "../../types/Customer";
-
 import type { TableColumn } from "../../../../../shared/components/Table/types";
 
 import "./CustomersPage.css";
@@ -21,11 +23,14 @@ export default function CustomersPage() {
 
     const navigate = useNavigate();
 
-    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [customers, setCustomers] =
+        useState<Customer[]>([]);
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] =
+        useState(true);
 
-    const [error, setError] = useState("");
+    const [error, setError] =
+        useState("");
 
     useEffect(() => {
 
@@ -41,13 +46,16 @@ export default function CustomersPage() {
 
         try {
 
-            const response = await getAllCustomers();
+            const response =
+                await getAllCustomers();
 
             setCustomers(response);
 
         } catch {
 
-            setError("No fue posible cargar los clientes.");
+            setError(
+                "No fue posible cargar los clientes."
+            );
 
         } finally {
 
@@ -61,33 +69,37 @@ export default function CustomersPage() {
         {
             key: "id",
             title: "ID",
+            width: "80px",
         },
         {
             key: "name",
             title: "Nombre",
+            width: "30%",
         },
         {
-            key: "phone",
-            title: "Teléfono",
-        },
-        {
-            key: "email",
-            title: "Correo electrónico",
+            key: "address",
+            title: "Dirección",
         },
         {
             key: "actions",
             title: "Acciones",
+            width: "150px",
+            align: "center",
             render: (customer) => (
+
                 <Button
                     size="sm"
                     variant="secondary"
                     onClick={() =>
-                        navigate(`/sales/customers/edit/${customer.id}`)
+                        navigate(
+                            `/sales/customers/edit/${customer.id}`
+                        )
                     }
                 >
                     <SquarePen size={16} />
                     Editar
                 </Button>
+
             ),
         },
     ];
@@ -95,9 +107,15 @@ export default function CustomersPage() {
     if (loading) {
 
         return (
+
             <div className="customers-page__loading">
-                <Spinner label="Cargando clientes..." />
+
+                <Spinner
+                    label="Cargando clientes..."
+                />
+
             </div>
+
         );
 
     }
@@ -122,7 +140,9 @@ export default function CustomersPage() {
 
                 <Button
                     onClick={() =>
-                        navigate("/sales/customers/create")
+                        navigate(
+                            "/sales/customers/create"
+                        )
                     }
                 >
                     <Plus size={18} />
@@ -137,7 +157,9 @@ export default function CustomersPage() {
                     variant="danger"
                     title="Error"
                     closable
-                    onClose={() => setError("")}
+                    onClose={() =>
+                        setError("")
+                    }
                 >
                     {error}
                 </Alert>
@@ -169,3 +191,4 @@ export default function CustomersPage() {
     );
 
 }
+
