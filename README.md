@@ -1,4 +1,4 @@
-````md
+
 # UNERP Frontend
 
 Frontend del sistema **UNERP**, desarrollado con **React**, **TypeScript** y **Vite**.
@@ -75,4 +75,4 @@ src/
 - React Router DOM
 - Axios
 - Lucide React
-````
+
