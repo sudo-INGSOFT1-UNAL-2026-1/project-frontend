@@ -1,6 +1,7 @@
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;  
-}
-
+@import "./shared/styles/colors.css";
+@import "./shared/styles/spacing.css";
+@import "./shared/styles/radii.css";
+@import "./shared/styles/shadows.css";
+@import "./shared/styles/theme.css";
+@import "./shared/styles/typography.css";
+@import "./shared/styles/global.css";

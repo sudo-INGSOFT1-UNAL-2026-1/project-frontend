@@ -1,0 +1,117 @@
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+
+    padding: 6px 12px;
+
+    border: 1px solid transparent;
+    border-radius: 999px;
+
+    background: var(--color-background);
+
+    color: var(--color-text);
+
+    cursor: pointer;
+
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast);
+
+    font: inherit;
+}
+
+.chip:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.chip:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.chip:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+.chip--sm {
+    padding: 4px 10px;
+    font-size: var(--font-xs);
+}
+
+.chip--md {
+    padding: 6px 12px;
+    font-size: var(--font-sm);
+}
+
+.chip--lg {
+    padding: 8px 16px;
+    font-size: var(--font-md);
+}
+
+.chip--primary {
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.chip--secondary {
+    background: var(--color-background);
+    color: var(--color-text);
+}
+
+.chip--success {
+    background: rgba(34,197,94,.15);
+    color: var(--color-success);
+}
+
+.chip--warning {
+    background: rgba(245,158,11,.15);
+    color: var(--color-warning);
+}
+
+.chip--danger {
+    background: rgba(239,68,68,.15);
+    color: var(--color-danger);
+}
+
+.chip--info {
+    background: rgba(59,130,246,.15);
+    color: var(--color-info);
+}
+
+.chip--selected {
+    border-color: currentColor;
+}
+
+.chip__label {
+    display: flex;
+    align-items: center;
+}
+
+.chip__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chip__remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 18px;
+    height: 18px;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    transition: background-color var(--transition-fast);
+}
+
+.chip__remove:hover {
+    background: rgba(0,0,0,.08);
+}

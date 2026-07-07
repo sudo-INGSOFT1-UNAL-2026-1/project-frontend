@@ -1,0 +1,118 @@
+.checkbox {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.checkbox__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+
+    cursor: pointer;
+
+    user-select: none;
+}
+
+.checkbox__input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.checkbox__box {
+    width: 20px;
+    height: 20px;
+
+    flex-shrink: 0;
+
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+
+    background: var(--color-white);
+
+    position: relative;
+
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.checkbox__box::after {
+    content: "";
+
+    position: absolute;
+
+    left: 5px;
+    top: 1px;
+
+    width: 5px;
+    height: 10px;
+
+    border: solid var(--color-white);
+    border-width: 0 2px 2px 0;
+
+    transform: rotate(45deg) scale(0);
+
+    transition: transform var(--transition-fast);
+}
+
+.checkbox__input:checked + .checkbox__box {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.checkbox__input:checked + .checkbox__box::after {
+    transform: rotate(45deg) scale(1);
+}
+
+.checkbox__input:indeterminate + .checkbox__box {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.checkbox__input:indeterminate + .checkbox__box::after {
+    left: 4px;
+    top: 8px;
+
+    width: 10px;
+    height: 0;
+
+    border: none;
+    border-top: 2px solid var(--color-white);
+
+    transform: none;
+}
+
+.checkbox__input:focus-visible + .checkbox__box {
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+.checkbox__input:disabled + .checkbox__box {
+    background: var(--color-background);
+    cursor: not-allowed;
+}
+
+.checkbox__text {
+    color: var(--color-text);
+    font-size: var(--font-md);
+}
+
+.checkbox__required {
+    color: var(--color-danger);
+}
+
+.checkbox__helper,
+.checkbox__error {
+    margin-left: 30px;
+    font-size: var(--font-sm);
+}
+
+.checkbox__helper {
+    color: var(--color-text-secondary);
+}
+
+.checkbox__error {
+    color: var(--color-danger);
+}

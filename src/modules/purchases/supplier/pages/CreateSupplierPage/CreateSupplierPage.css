@@ -1,0 +1,67 @@
+.create-supplier-page {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: var(--space-xl);
+}
+
+.create-supplier-page__header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: var(--space-lg);
+
+    flex-wrap: wrap;
+}
+
+.create-supplier-page__title {
+    margin: 0;
+
+    font-size: var(--font-3xl);
+}
+
+.create-supplier-page__subtitle {
+    margin-top: var(--space-xs);
+
+    color: var(--color-text-secondary);
+}
+
+.create-supplier-page__form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: var(--space-lg);
+}
+
+.create-supplier-page__actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: var(--space-md);
+
+    margin-top: var(--space-md);
+}
+
+@media (max-width: 768px) {
+
+    .create-supplier-page__header {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .create-supplier-page__actions {
+
+        flex-direction: column;
+
+    }
+
+}
