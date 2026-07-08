@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save, Trash2 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+    ArrowLeft,
+    Save,
+    Trash2,
+} from "lucide-react";
+import {
+    useNavigate,
+    useParams,
+} from "react-router-dom";
 
 import Alert from "../../../../../shared/components/Alert";
 import Button from "../../../../../shared/components/Button";
@@ -14,38 +21,83 @@ import {
     updatePurchase,
 } from "../../services/purchaseService";
 
-import { getAllSuppliers } from "../../../supplier/services/supplierService";
+import {
+    getAllSuppliers,
+} from "../../../supplier/services/supplierService";
+
+import {
+    getAllProducts,
+} from "../../../../inventory/product/services/productService";
 
 import PurchaseForm from "../../components/PurchaseForm";
 
 import type { Purchase } from "../../types/Purchase";
-import type { Supplier } from "../../../supplier/types/Supplier";
 import type { PurchaseProduct } from "../../types/PurchaseProduct";
+import type { Supplier } from "../../../supplier/types/Supplier";
+import type { Product } from "../../../../inventory/product/types/Product";
+
 import type { TableColumn } from "../../../../../shared/components/Table/types";
 
 import "./EditPurchasePage.css";
 
 export default function EditPurchasePage() {
 
+    function normalizePurchaseState(state: string) {
+
+        switch (state.toUpperCase()) {
+
+            case "PENDING":
+                return "PENDIENTE";
+
+            case "RECEIVED":
+                return "RECIBIDO";
+
+            case "PAID":
+                return "PAGADO";
+
+            case "CANCELLED":
+                return "CANCELADO";
+
+            default:
+                return state;
+
+        }
+
+    }
+
     const { purchaseId } = useParams();
 
     const navigate = useNavigate();
 
-    const [purchase, setPurchase] = useState<Purchase | null>(null);
+    const [purchase, setPurchase] =
+        useState<Purchase | null>(null);
 
-    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+    const [purchaseProducts, setPurchaseProducts] =
+        useState<PurchaseProduct[]>([]);
 
-    const [supplierId, setSupplierId] = useState(0);
+    const [suppliers, setSuppliers] =
+        useState<Supplier[]>([]);
 
-    const [paymentDate, setPaymentDate] = useState("");
+    const [products, setProducts] =
+        useState<Product[]>([]);
 
-    const [deliveryDate, setDeliveryDate] = useState("");
+    const [supplierId, setSupplierId] =
+        useState(0);
 
-    const [state, setState] = useState("");
+    const [paymentDate, setPaymentDate] =
+        useState("");
 
-    const [loading, setLoading] = useState(true);
+    const [deliveryDate, setDeliveryDate] =
+        useState("");
 
-    const [error, setError] = useState("");
+    const [state, setState] =
+        useState("");
+
+    const [loading, setLoading] =
+        useState(true);
+
+    const [error, setError] =
+        useState("");
 
     useEffect(() => {
 
@@ -68,16 +120,36 @@ export default function EditPurchasePage() {
         try {
 
             const [
+
                 purchaseResponse,
+
                 suppliersResponse,
+
+                productsResponse,
+
             ] = await Promise.all([
-                getPurchaseById(Number(purchaseId)),
+
+                getPurchaseById(
+                    Number(purchaseId)
+                ),
+
                 getAllSuppliers(),
+
+                getAllProducts(),
+
             ]);
 
-            setPurchase(purchaseResponse);
+            setPurchase(
+                purchaseResponse
+            );
 
-            setSuppliers(suppliersResponse);
+            setSuppliers(
+                suppliersResponse
+            );
+
+            setProducts(
+                productsResponse
+            );
 
             setSupplierId(
                 purchaseResponse.supplierId
@@ -92,7 +164,13 @@ export default function EditPurchasePage() {
             );
 
             setState(
-                purchaseResponse.state
+                normalizePurchaseState(
+                    purchaseResponse.state
+                )
+            );
+
+            setPurchaseProducts(
+                purchaseResponse.purchaseProducts
             );
 
         } catch {
@@ -109,12 +187,27 @@ export default function EditPurchasePage() {
 
     }
 
+    function getProductName(
+        productId: number
+    ) {
+
+        const product =
+            products.find(
+                (item) =>
+                    item.id === productId
+            );
+
+        return product
+            ? product.name
+            : `#${productId}`;
+
+    }
+
     async function handleUpdatePurchase() {
 
         if (!purchase) {
 
             return;
-
         }
 
         try {
@@ -123,24 +216,57 @@ export default function EditPurchasePage() {
                 await updatePurchase(
                     purchase.id,
                     {
+
                         supplierId,
+
                         userId: purchase.userId,
+
                         paymentDate,
+
                         deliveryDate,
+
                         state,
+
                         totalCost:
                             purchase.totalCost,
-                        products: [],
+
+                        products:
+                            purchaseProducts.map(
+                                (item) => ({
+                                    productId:
+                                        item.productId,
+                                    quantity:
+                                        item.quantity,
+                                    unitPrice:
+                                        item.unitPrice,
+                                })
+                            ),
+
                     }
                 );
 
             setPurchase(response);
 
+            const normalizedState =
+                normalizePurchaseState(
+                    response.state
+                );
+
+            setState(normalizedState);
+
+            if (response.purchaseProducts) {
+                setPurchaseProducts(
+                    response.purchaseProducts
+                );
+            }
+
             alert(
                 "Compra actualizada correctamente."
             );
 
-        } catch {
+        } catch (error) {
+
+            console.error(error);
 
             alert(
                 "No fue posible actualizar la compra."
@@ -148,7 +274,7 @@ export default function EditPurchasePage() {
 
         }
 
-    }
+}
 
     async function handleDeletePurchase() {
 
@@ -158,9 +284,10 @@ export default function EditPurchasePage() {
 
         }
 
-        const confirmed = window.confirm(
-            "¿Está seguro de eliminar esta compra?"
-        );
+        const confirmed =
+            window.confirm(
+                "¿Está seguro de eliminar esta compra?"
+            );
 
         if (!confirmed) {
 
@@ -191,40 +318,65 @@ export default function EditPurchasePage() {
     }
 
     const columns: TableColumn<PurchaseProduct>[] = [
+
         {
             key: "product",
             title: "Producto",
             render: (item) =>
-                item.product.name,
+                getProductName(
+                    item.productId
+                ),
         },
+
         {
             key: "quantity",
             title: "Cantidad",
         },
+
         {
             key: "unitPrice",
-            title: "Precio Unitario",
+            title: "Precio unitario",
             render: (item) =>
-                `$${item.unitPrice.toLocaleString(
-                    "es-CO"
-                )}`,
+                new Intl.NumberFormat(
+                    "es-CO",
+                    {
+                        style: "currency",
+                        currency: "COP",
+                    }
+                ).format(
+                    item.unitPrice
+                ),
         },
+
         {
             key: "subtotal",
             title: "Subtotal",
             render: (item) =>
-                `$${item.subtotal.toLocaleString(
-                    "es-CO"
-                )}`,
+                new Intl.NumberFormat(
+                    "es-CO",
+                    {
+                        style: "currency",
+                        currency: "COP",
+                    }
+                ).format(
+                    item.subtotal
+                ),
         },
+
     ];
 
     if (loading) {
 
         return (
+
             <div className="edit-purchase-page__loading">
-                <Spinner label="Cargando compra..." />
+
+                <Spinner
+                    label="Cargando compra..."
+                />
+
             </div>
+
         );
 
     }
@@ -244,7 +396,7 @@ export default function EditPurchasePage() {
                 <div>
 
                     <h1 className="edit-purchase-page__title">
-                        Editar Compra
+                        Editar compra
                     </h1>
 
                     <p className="edit-purchase-page__subtitle">
@@ -261,29 +413,27 @@ export default function EditPurchasePage() {
                     variant="danger"
                     title="Error"
                     closable
-                    onClose={() => setError("")}
+                    onClose={() =>
+                        setError("")
+                    }
                 >
                     {error}
                 </Alert>
 
             )}
 
-            <Card>
-
-                <PurchaseForm
-                    suppliers={suppliers}
-                    supplierId={supplierId}
-                    setSupplierId={setSupplierId}
-                    paymentDate={paymentDate}
-                    setPaymentDate={setPaymentDate}
-                    deliveryDate={deliveryDate}
-                    setDeliveryDate={setDeliveryDate}
-                    state={state}
-                    setState={setState}
-                    readonlySupplier
-                />
-
-            </Card>
+            <PurchaseForm
+                suppliers={suppliers}
+                supplierId={supplierId}
+                setSupplierId={setSupplierId}
+                paymentDate={paymentDate}
+                setPaymentDate={setPaymentDate}
+                deliveryDate={deliveryDate}
+                setDeliveryDate={setDeliveryDate}
+                state={state}
+                setState={setState}
+                readonlySupplier
+            />
 
             <Card>
 
@@ -293,7 +443,9 @@ export default function EditPurchasePage() {
 
                 <Table<PurchaseProduct>
                     columns={columns}
-                    data={purchase.purchaseProducts}
+                    data={
+                        purchaseProducts
+                    }
                 />
 
             </Card>
@@ -302,13 +454,22 @@ export default function EditPurchasePage() {
 
                 <div className="edit-purchase-page__summary">
 
-                    <span>Total de la compra</span>
+                    <span>
+                        Total de la compra
+                    </span>
 
                     <strong>
-                        $
-                        {purchase.totalCost.toLocaleString(
-                            "es-CO"
+
+                        {new Intl.NumberFormat(
+                            "es-CO",
+                            {
+                                style: "currency",
+                                currency: "COP",
+                            }
+                        ).format(
+                            purchase.totalCost
                         )}
+
                     </strong>
 
                 </div>
@@ -318,7 +479,6 @@ export default function EditPurchasePage() {
             <div className="edit-purchase-page__actions">
 
                 <Button
-                    variant="primary"
                     onClick={
                         handleUpdatePurchase
                     }
@@ -340,7 +500,9 @@ export default function EditPurchasePage() {
                 <Button
                     variant="secondary"
                     onClick={() =>
-                        navigate("/purchases")
+                        navigate(
+                            "/purchases"
+                        )
                     }
                 >
                     <ArrowLeft size={18} />

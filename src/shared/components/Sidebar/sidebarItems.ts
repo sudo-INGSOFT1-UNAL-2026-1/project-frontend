@@ -122,6 +122,12 @@ export const sidebarItems: SidebarItem[] = [
                 icon: ReceiptText,
             },
             {
+                id: "sales-create",
+                label: "Nueva cotización",
+                path: "/sales/quote",
+                icon: PackagePlus,
+            },
+            {
                 id: "customers",
                 label: "Clientes",
                 icon: User,

@@ -229,7 +229,7 @@ export default function CreatePurchasePage() {
 
                 deliveryDate,
 
-                state: "PENDING",
+                state: "PENDIENTE",
 
                 totalCost,
 

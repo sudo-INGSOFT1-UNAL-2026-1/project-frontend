@@ -1,78 +1,212 @@
-
 # UNERP Frontend
 
-Frontend del sistema **UNERP**, desarrollado con **React**, **TypeScript** y **Vite**.
+<p align="center">
+  <img src="./public/logo.png" width="160"/>
+</p>
 
-## Requisitos
+<p align="center">
 
-- Node.js 20 o superior
-- npm
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-## Instalación
+</p>
 
-Clonar el repositorio e instalar las dependencias:
+Frontend del sistema **UNERP**, desarrollado para la asignatura **Ingeniería de Software I** de la Universidad Nacional de Colombia.
+
+El proyecto implementa una arquitectura modular basada en React y TypeScript para la administración de los diferentes módulos del ERP.
+
+---
+
+# Características
+
+- Inicio de sesión
+- Dashboard
+- Gestión de usuarios
+- Gestión de productos
+- Gestión de proveedores
+- Gestión de clientes
+- Gestión de compras
+- Componentes reutilizables
+- Control de permisos
+- Arquitectura modular
+
+---
+
+# Tecnologías
+
+| Tecnología | Versión |
+|------------|---------|
+| React | 19 |
+| TypeScript | 5 |
+| Vite | 7 |
+| React Router | 7 |
+| Lucide React | Latest |
+
+---
+
+# Arquitectura
+
+El proyecto sigue una arquitectura modular basada en funcionalidades.
+
+```
+
+src/
+│
+├── modules/
+│ ├── authentication/
+│ ├── dashboard/
+│ ├── inventory/
+│ ├── purchases/
+│ ├── sales/
+│ └── users/
+│
+├── shared/
+│ ├── components/
+│ ├── hooks/
+│ ├── layouts/
+│ ├── services/
+│ └── utils/
+│
+└── routes/
+
+```
+
+Cada módulo contiene sus propias:
+
+- páginas
+- componentes
+- servicios
+- tipos
+- estilos
+
+permitiendo un bajo acoplamiento entre funcionalidades.
+
+---
+
+# Componentes reutilizables
+
+El proyecto cuenta con una librería de componentes reutilizables.
+
+- Alert
+- Button
+- Card
+- EmptyState
+- Input
+- Navbar
+- Select
+- Sidebar
+- Spinner
+- Table
+
+---
+
+# Instalación
+
+## Clonar
+
+```bash
+git clone https://github.com/usuario/project-frontend.git
+```
+
+Entrar al proyecto
+
+```bash
+cd project-frontend
+```
+
+Instalar dependencias
 
 ```bash
 npm install
 ```
 
-## Configuración
-
-Crear un archivo `.env` en la raíz del proyecto con la URL del backend.
-
-Ejemplo:
-
-```env
-VITE_API_URL=http://localhost:8080
-```
-
-## Ejecutar en desarrollo
+Ejecutar
 
 ```bash
 npm run dev
 ```
 
-El proyecto estará disponible en:
-
-```
-http://localhost:5173
-```
-
-## Compilar para producción
+Compilar
 
 ```bash
 npm run build
 ```
 
-## Vista previa de producción
+Vista previa
 
 ```bash
 npm run preview
 ```
 
-## Estructura del proyecto
+---
+
+# Variables de entorno
+
+Crear un archivo
 
 ```
-src/
-├── modules/
-│   ├── auth/
-│   ├── dashboard/
-│   ├── inventory/
-│   ├── purchases/
-│   ├── sales/
-│   └── user/
-├── router/
-├── services/
-├── shared/
-└── styles/
+.env
 ```
 
-## Tecnologías utilizadas
+Ejemplo
 
-- React
-- TypeScript
-- Vite
-- React Router DOM
-- Axios
-- Lucide React
+```env
+VITE_API_URL=http://localhost:8080
+```
 
+---
+
+# Scripts
+
+| Script | Descripción |
+|---------|-------------|
+| npm run dev | Ejecuta el proyecto |
+| npm run build | Compila producción |
+| npm run preview | Vista previa |
+| npm run lint | Ejecuta ESLint |
+
+---
+
+# Módulos implementados
+
+## Usuarios
+
+- CRUD
+- Roles
+- Permisos
+
+## Inventario
+
+- CRUD Productos
+
+## Compras
+
+- CRUD Compras
+- CRUD Proveedores
+
+## Ventas
+
+- CRUD Clientes
+
+---
+
+# Diseño
+
+El proyecto utiliza una guía de estilos propia basada en:
+
+- Cards
+- Inputs consistentes
+- Tablas reutilizables
+- Sidebar jerárquico
+- Navbar responsive
+- Componentes desacoplados
+
+---
+
+# Autores
+
+Proyecto desarrollado por el equipo **sudo** para Ingeniería de Software I.
+
+Universidad Nacional de Colombia.

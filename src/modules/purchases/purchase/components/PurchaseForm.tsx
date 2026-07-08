@@ -46,7 +46,7 @@ export default function PurchaseForm({
 
     setDeliveryDate,
 
-    state = "PENDING",
+    state = "PENDIENTE",
 
     setState,
 
@@ -111,16 +111,20 @@ export default function PurchaseForm({
                         value={state}
                         options={[
                             {
-                                value: "PENDING",
+                                value: "PENDIENTE",
                                 label: "Pendiente",
                             },
                             {
-                                value: "COMPLETED",
-                                label: "Completada",
+                                value: "RECIBIDO",
+                                label: "Recibido",
                             },
                             {
-                                value: "CANCELLED",
-                                label: "Cancelada",
+                                value: "PAGADO",
+                                label: "Pagado",
+                            },
+                            {
+                                value: "CANCELADO",
+                                label: "Cancelado",
                             },
                         ]}
                         onChange={(event) =>
