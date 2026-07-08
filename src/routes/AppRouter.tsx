@@ -10,15 +10,23 @@ import PublicRoute from "./PublicRoute";
 import AuthorizationRoute from "./AuthorizationRoute";
 import Layout from "../shared/components/Layout/Layout";
 import UsersPage from "../modules/user/pages/UsersPage/UsersPage";
-import ProductsPage from "../modules/inventory/product/pages/ProductsPage";
-import CreateProductPage from "../modules/inventory/product/pages/CreateProductPage";
+import ProductsPage from "../modules/inventory/product/pages/ProductsPage/ProductsPage.tsx";
+import CreateProductPage from "../modules/inventory/product/pages/CreateProductPage/CreateProductPage.tsx";
 import EditProductPage from "../modules/inventory/product/pages/EditProductPage/EditProductPage";
 import CreateSupplierPage from "../modules/purchases/supplier/pages/CreateSupplierPage/CreateSupplierPage.tsx";
-import EditSupplierPage from "../modules/purchases/supplier/pages/EditSupplierPage";
+import EditSupplierPage from "../modules/purchases/supplier/pages/EditSupplierPage/EditSupplierPage.tsx";
 import SuppliersPage from "../modules/purchases/supplier/pages/SuppliersPage/SuppliersPage";
-import SalesPage from "../modules/sales/pages/SalesPage";
 import CreateUserPage from "../modules/user/pages/CreateUserPage/CreateUserPage";
 import EditUserPage from "../modules/user/pages/EditUserPage/EditUserPage";
+import CustomersPage from "../modules/sales/customer/pages/CustomersPage/CustomersPage.tsx";
+import CreateCustomerPage from "../modules/sales/customer/pages/CreateCustomerPage/CreateCustomerPage.tsx";
+import EditCustomerPage from "../modules/sales/customer/pages/EditCustomerPage/EditCustomerPage.tsx";
+import SalesPage from "../modules/sales/sale/pages/SalesPage/SalesPage";
+import CreateSalePage from "../modules/sales/sale/pages/CreateSalePage/CreateSalePage";
+import EditSalePage from "../modules/sales/sale/pages/EditSalePage/EditSalePage";
+import PurchasesPage from "../modules/purchases/purchase/pages/PurchasesPage/PurchasesPage.tsx";
+import CreatePurchasePage from "../modules/purchases/purchase/pages/CreatePurchasePage/CreatePurchasePage.tsx";
+import EditPurchasePage from "../modules/purchases/purchase/pages/EditPurchasePage/EditPurchasePage.tsx";
 
 export default function AppRouter() {
     return(
@@ -149,7 +157,7 @@ export default function AppRouter() {
                             />
 
                             <Route
-                                path="suppliers/edit/:Id"
+                                path="suppliers/edit/:supplierId"
                                 element={
                                     <ProtectedRoute>
                                         <AuthorizationRoute permission="canAccessPurchases">
@@ -158,11 +166,107 @@ export default function AppRouter() {
                                     </ProtectedRoute>
                                 }
                             />
+                            <Route
+                                    index
+                                    element={
+                                        <ProtectedRoute>
+                                            <AuthorizationRoute permission="canAccessPurchases">
+                                                <PurchasesPage />
+                                            </AuthorizationRoute>
+                                        </ProtectedRoute>
+                                    }
+                                />
+
+                            <Route
+                                path="create"
+                                element={
+                                    <ProtectedRoute>
+                                        <AuthorizationRoute permission="canAccessPurchases">
+                                            <CreatePurchasePage />
+                                        </AuthorizationRoute>
+                                    </ProtectedRoute>
+                                }
+                            />
+
+                            <Route
+                                path="edit/:purchaseId"
+                                element={
+                                    <ProtectedRoute>
+                                        <AuthorizationRoute permission="canAccessPurchases">
+                                            <EditPurchasePage />
+                                        </AuthorizationRoute>
+                                    </ProtectedRoute>
+                                }
+                            />
+
+                            
                     </Route>
-                    <Route
-                        path="/sales"
-                        element={<SalesPage />}
-                    />
+                    <Route path="/sales" >
+                        <Route
+                            index
+                            element={
+                                <ProtectedRoute>
+                                    <AuthorizationRoute permission="canAccessSales">
+                                        <SalesPage />
+                                    </AuthorizationRoute>
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="customers"
+                            element={
+                                <ProtectedRoute>
+                                    <AuthorizationRoute permission="canAccessSales">
+                                        <CustomersPage />
+                                    </AuthorizationRoute>
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="customers/create"
+                            element={
+                                <ProtectedRoute>
+                                    <AuthorizationRoute permission="canAccessSales">
+                                        <CreateCustomerPage />
+                                    </AuthorizationRoute>
+                                </ProtectedRoute>
+                            }
+                        />                        
+                        <Route
+                            path="customers/edit/:customerId"
+                            element={
+                                <ProtectedRoute>
+                                    <AuthorizationRoute permission="canAccessSales">
+                                        <EditCustomerPage />
+                                    </AuthorizationRoute>
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="quote"
+                            element={
+                                <ProtectedRoute>
+                                    <AuthorizationRoute permission="canAccessSales">
+                                        <CreateSalePage />
+                                    </AuthorizationRoute>
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="edit/:saleId"
+                            element={
+                                <ProtectedRoute>
+                                    <AuthorizationRoute permission="canAccessSales">
+                                        <EditSalePage />
+                                    </AuthorizationRoute>
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Route>
                 </Route>
             </Routes>
         </BrowserRouter>

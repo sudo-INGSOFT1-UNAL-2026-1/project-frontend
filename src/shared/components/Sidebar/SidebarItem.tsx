@@ -1,5 +1,12 @@
+import {
+    useEffect,
+    useState,
+} from "react";
 import { ChevronDown } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+import {
+    NavLink,
+    useLocation,
+} from "react-router-dom";
 
 import { canAccess } from "../../utils/authorization";
 
@@ -29,6 +36,11 @@ export default function SidebarItem({
 
     const location = useLocation();
 
+    const [
+        expandedChildren,
+        setExpandedChildren,
+    ] = useState(false);
+
     if (
         item.permission &&
         !canAccess(item.permission)
@@ -48,7 +60,8 @@ export default function SidebarItem({
         if (
             currentItem.path &&
             (
-                location.pathname === currentItem.path ||
+                location.pathname ===
+                    currentItem.path ||
                 location.pathname.startsWith(
                     `${currentItem.path}/`
                 )
@@ -65,12 +78,53 @@ export default function SidebarItem({
 
     }
 
-    const isActive = isItemActive(item);
+    const isActive =
+        isItemActive(item);
+
+    useEffect(() => {
+
+        if (!hasChildren) {
+            return;
+        }
+
+        const active =
+            item.children?.some(
+                isItemActive
+            ) ?? false;
+
+        if (active) {
+            setExpandedChildren(true);
+        }
+
+    }, [location.pathname]);
+
+    const isExpanded =
+        level === 0
+            ? expanded
+            : expandedChildren;
+
+    function handleToggle() {
+
+        if (level === 0) {
+
+            onToggle(item.id);
+
+            return;
+
+        }
+
+        setExpandedChildren(
+            (current) => !current
+        );
+
+    }
 
     return (
+
         <li className="sidebar__item">
 
             {hasChildren ? (
+
                 <>
 
                     <button
@@ -82,21 +136,23 @@ export default function SidebarItem({
                         ]
                             .filter(Boolean)
                             .join(" ")}
-                        onClick={() =>
-                            onToggle(item.id)
+                        onClick={
+                            handleToggle
                         }
                     >
 
                         <span
                             className="sidebar__icon"
                             style={{
-                                paddingLeft: `${level * 12}px`,
+                                paddingLeft:
+                                    `${level * 12}px`,
                             }}
                         >
                             <Icon size={20} />
                         </span>
 
                         {!collapsed && (
+
                             <>
 
                                 <span className="sidebar__label">
@@ -107,7 +163,7 @@ export default function SidebarItem({
                                     size={18}
                                     className={[
                                         "sidebar__arrow",
-                                        expanded &&
+                                        isExpanded &&
                                             "sidebar__arrow--expanded",
                                     ]
                                         .filter(Boolean)
@@ -115,12 +171,13 @@ export default function SidebarItem({
                                 />
 
                             </>
+
                         )}
 
                     </button>
 
                     {!collapsed &&
-                        expanded && (
+                        isExpanded && (
 
                             <ul className="sidebar__sublist">
 
@@ -135,13 +192,17 @@ export default function SidebarItem({
                                     .map((child) => (
 
                                         <SidebarItem
-                                            key={child.id}
-                                            item={child}
+                                            key={
+                                                child.id
+                                            }
+                                            item={
+                                                child
+                                            }
                                             collapsed={
                                                 collapsed
                                             }
                                             expanded={
-                                                expanded
+                                                false
                                             }
                                             level={
                                                 level + 1
@@ -158,12 +219,15 @@ export default function SidebarItem({
                         )}
 
                 </>
+
             ) : (
 
                 <NavLink
                     to={item.path!}
                     end
-                    className={({ isActive }) =>
+                    className={({
+                        isActive,
+                    }) =>
                         [
                             "sidebar__link",
                             isActive &&
@@ -177,7 +241,8 @@ export default function SidebarItem({
                     <span
                         className="sidebar__icon"
                         style={{
-                            paddingLeft: `${level * 12}px`,
+                            paddingLeft:
+                                `${level * 12}px`,
                         }}
                     >
                         <Icon size={20} />
@@ -196,6 +261,8 @@ export default function SidebarItem({
             )}
 
         </li>
+
     );
 
 }
+

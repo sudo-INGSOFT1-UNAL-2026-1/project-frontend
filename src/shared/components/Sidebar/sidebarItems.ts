@@ -5,6 +5,7 @@ import {
     ReceiptText,
     ShoppingCart,
     Truck,
+    User,
     UserPlus,
     Users,
 } from "lucide-react";
@@ -68,6 +69,25 @@ export const sidebarItems: SidebarItem[] = [
         permission: "canAccessPurchases",
         children: [
             {
+                id: "purchase-orders",
+                label: "Órdenes de compra",
+                icon: ShoppingCart,
+                children: [
+                    {
+                        id: "purchase-list",
+                        label: "Lista de compras",
+                        path: "/purchases",
+                        icon: ShoppingCart,
+                    },
+                    {
+                        id: "purchase-create",
+                        label: "Nueva compra",
+                        path: "/purchases/create",
+                        icon: PackagePlus,
+                    },
+                ],
+            },
+            {
                 id: "suppliers",
                 label: "Proveedores",
                 icon: Truck,
@@ -101,6 +121,32 @@ export const sidebarItems: SidebarItem[] = [
                 path: "/sales",
                 icon: ReceiptText,
             },
+            {
+                id: "sales-create",
+                label: "Nueva cotización",
+                path: "/sales/quote",
+                icon: PackagePlus,
+            },
+            {
+                id: "customers",
+                label: "Clientes",
+                icon: User,
+                children: [
+                    {
+                        id: "customers-list",
+                        label: "Lista de clientes",
+                        path: "/sales/customers",
+                        icon: User,
+                    },
+                    {
+                        id: "customers-create",
+                        label: "Nuevo cliente",
+                        path: "/sales/customers/create",
+                        icon: UserPlus,
+                    },
+                ],
+            },
         ],
     },
 ];
+

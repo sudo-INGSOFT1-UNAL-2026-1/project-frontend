@@ -1,5 +1,23 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+    ArrowLeft,
+    Save,
+    Trash2,
+} from "lucide-react";
+import {
+    useNavigate,
+    useParams,
+} from "react-router-dom";
+
+import Alert from "../../../../../shared/components/Alert";
+import Button from "../../../../../shared/components/Button";
+import Card from "../../../../../shared/components/Card";
+import CurrencyInput from "../../../../../shared/components/CurrencyInput";
+import Input from "../../../../../shared/components/Input";
+import Select from "../../../../../shared/components/Select";
+import Spinner from "../../../../../shared/components/Spinner";
+import TextArea from "../../../../../shared/components/Textarea";
+import Toast from "../../../../../shared/components/Toast";
 
 import {
     deleteProduct,
@@ -12,118 +30,181 @@ import { getAllSuppliers } from "../../../../purchases/supplier/services/supplie
 import type { Product } from "../../types/Product";
 import type { Supplier } from "../../../../purchases/supplier/types/Supplier";
 
+import "./EditProductPage.css";
+
 export default function EditProductPage() {
 
-    const { id } = useParams();
+    const { productId } = useParams();
 
     const navigate = useNavigate();
 
-    const [product, setProduct] = useState<Product | null>(null);
+    const [product, setProduct] =
+        useState<Product | null>(null);
 
-    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+    const [suppliers, setSuppliers] =
+        useState<Supplier[]>([]);
 
-    const [name, setName] = useState("");
+    const [loading, setLoading] =
+        useState(true);
 
-    const [description, setDescription] = useState("");
+    const [error, setError] =
+        useState("");
 
-    const [stock, setStock] = useState(0);
+    const [toastOpen, setToastOpen] =
+        useState(false);
 
-    const [price, setPrice] = useState(0);
+    const [toastMessage, setToastMessage] =
+        useState("");
 
-    const [batch, setBatch] = useState("");
+    const [toastVariant, setToastVariant] =
+        useState<"success" | "danger">(
+            "success"
+        );
 
-    const [expirationDate, setExpirationDate] = useState("");
+    const [name, setName] =
+        useState("");
 
-    const [supplierId, setSupplierId] = useState(0);
+    const [description, setDescription] =
+        useState("");
+
+    const [stock, setStock] =
+        useState(0);
+
+    const [price, setPrice] =
+        useState(0);
+
+    const [batch, setBatch] =
+        useState("");
+
+    const [expirationDate,
+        setExpirationDate] =
+        useState("");
+
+    const [supplierId,
+        setSupplierId] =
+        useState(0);
 
     useEffect(() => {
 
-        loadProduct();
+        async function loadData() {
 
-        loadSuppliers();
+            if (!productId) {
+                return;
+            }
 
-    }, [id]);
+            setLoading(true);
 
-    async function loadProduct() {
+            setError("");
 
-        if (!id) return;
+            try {
 
-        try {
+                const [
+                    productResponse,
+                    suppliersResponse,
+                ] = await Promise.all([
+                    getProductById(
+                        Number(productId)
+                    ),
+                    getAllSuppliers(),
+                ]);
 
-            const response = await getProductById(Number(id));
+                setProduct(productResponse);
 
-            setProduct(response);
+                setSuppliers(
+                    suppliersResponse
+                );
 
-            setName(response.name);
+                setName(
+                    productResponse.name
+                );
 
-            setDescription(response.description);
+                setDescription(
+                    productResponse.description
+                );
 
-            setStock(response.stock);
+                setStock(
+                    productResponse.stock
+                );
 
-            setPrice(response.price);
+                setPrice(
+                    productResponse.price
+                );
 
-            setBatch(response.batch);
+                setBatch(
+                    productResponse.batch
+                );
 
-            setExpirationDate(response.expirationDate);
+                setExpirationDate(
+                    productResponse.expirationDate
+                );
 
-            setSupplierId(response.supplierId);
+                setSupplierId(
+                    productResponse.supplierId
+                );
 
-        } catch (error) {
+            } catch {
 
-            console.error(error);
+                setError(
+                    "No fue posible cargar el producto."
+                );
 
-            alert("Error al cargar el producto.");
+            } finally {
+
+                setLoading(false);
+
+            }
 
         }
 
-    }
+        loadData();
 
-    async function loadSuppliers() {
-
-        try {
-
-            const response = await getAllSuppliers();
-
-            setSuppliers(response);
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert("Error al cargar los proveedores.");
-
-        }
-
-    }
+    }, [productId]);
 
     async function handleUpdateProduct() {
 
-        if (!product) return;
+        if (!product) {
+            return;
+        }
 
         try {
 
-            const response = await updateProduct(
-                product.id,
-                {
-                    name,
-                    description,
-                    stock,
-                    price,
-                    batch,
-                    expirationDate,
-                    supplierId,
-                },
-            );
+            const response =
+                await updateProduct(
+                    product.id,
+                    {
+                        name,
+                        description,
+                        stock,
+                        price,
+                        batch,
+                        expirationDate,
+                        supplierId,
+                    }
+                );
 
             setProduct(response);
 
-            alert("Producto actualizado correctamente.");
+            setToastVariant(
+                "success"
+            );
 
-        } catch (error) {
+            setToastMessage(
+                "Producto actualizado correctamente."
+            );
 
-            console.error(error);
+            setToastOpen(true);
 
-            alert("Error al actualizar el producto.");
+        } catch {
+
+            setToastVariant(
+                "danger"
+            );
+
+            setToastMessage(
+                "No fue posible actualizar el producto."
+            );
+
+            setToastOpen(true);
 
         }
 
@@ -131,193 +212,243 @@ export default function EditProductPage() {
 
     async function handleDeleteProduct() {
 
-        if (!product) return;
+        if (!product) {
+            return;
+        }
 
-        const confirmed = window.confirm(
-            "¿Estás seguro de que quieres eliminar este producto?"
-        );
+        const confirmed =
+            window.confirm(
+                "¿Desea eliminar este producto?"
+            );
 
-        if (!confirmed) return;
+        if (!confirmed) {
+            return;
+        }
 
         try {
 
-            await deleteProduct(product.id);
+            await deleteProduct(
+                product.id
+            );
 
-            alert("Producto eliminado correctamente.");
+            navigate(
+                "/inventory/products"
+            );
 
-            navigate("/inventory/products");
+        } catch {
 
-        } catch (error) {
+            setToastVariant(
+                "danger"
+            );
 
-            console.error(error);
+            setToastMessage(
+                "No fue posible eliminar el producto."
+            );
 
-            alert("Error al eliminar el producto.");
+            setToastOpen(true);
 
         }
 
     }
 
-    if (!product) {
+    if (loading) {
 
-        return <p>Loading...</p>;
+        return (
+            <div className="edit-product-page__loading">
+                <Spinner
+                    label="Cargando producto..."
+                />
+            </div>
+        );
 
     }
 
     return (
 
-        <div>
+        <div className="edit-product-page">
 
-            <h1>Editar Producto</h1>
+            <div className="edit-product-page__header">
 
-            <hr />
+                <div>
 
-            <div>
+                    <h1 className="edit-product-page__title">
+                        Editar producto
+                    </h1>
 
-                <label>Nombre</label>
+                    <p className="edit-product-page__subtitle">
+                        Actualice la información del producto.
+                    </p>
 
-                <br />
-
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
+                </div>
 
             </div>
 
-            <br />
+            {error && (
 
-            <div>
-
-                <label>Descripción</label>
-
-                <br />
-
-                <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-
-            </div>
-
-            <br />
-
-            <div>
-
-                <label>Stock</label>
-
-                <br />
-
-                <input
-                    type="number"
-                    min={0}
-                    value={stock}
-                    onChange={(e) => setStock(Number(e.target.value))}
-                />
-
-            </div>
-
-            <br />
-
-            <div>
-
-                <label>Precio</label>
-
-                <br />
-
-                <input
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    value={price}
-                    onChange={(e) => setPrice(Number(e.target.value))}
-                />
-
-            </div>
-
-            <br />
-
-            <div>
-
-                <label>Batch</label>
-
-                <br />
-
-                <input
-                    type="text"
-                    value={batch}
-                    onChange={(e) => setBatch(e.target.value)}
-                />
-
-            </div>
-
-            <br />
-
-            <div>
-
-                <label>Fecha de Expiración</label>
-
-                <br />
-
-                <input
-                    type="date"
-                    value={expirationDate}
-                    onChange={(e) => setExpirationDate(e.target.value)}
-                />
-
-            </div>
-
-            <br />
-
-            <div>
-
-                <label>Proveedor</label>
-
-                <br />
-
-                <select
-                    value={supplierId}
-                    onChange={(e) => setSupplierId(Number(e.target.value))}
+                <Alert
+                    variant="danger"
+                    title="Error"
+                    closable
+                    onClose={() =>
+                        setError("")
+                    }
                 >
+                    {error}
+                </Alert>
 
-                    <option value={0}>
-                        Seleccione un proveedor
-                    </option>
+            )}
 
-                    {suppliers.map((supplier) => (
+            <Card>
 
-                        <option
-                            key={supplier.id}
-                            value={supplier.id}
-                        >
-                            {supplier.name}
-                        </option>
+                <div className="edit-product-page__form">
 
-                    ))}
+                    <Input
+                        label="Nombre"
+                        value={name}
+                        onChange={(event) =>
+                            setName(
+                                event.target.value
+                            )
+                        }
+                    />
 
-                </select>
+                    <TextArea
+                        label="Descripción"
+                        value={description}
+                        onChange={(event) =>
+                            setDescription(
+                                event.target.value
+                            )
+                        }
+                    />
 
-            </div>
+                    <Input
+                        label="Stock"
+                        type="number"
+                        min={0}
+                        value={stock}
+                        onChange={(event) =>
+                            setStock(
+                                Number(
+                                    event.target.value
+                                )
+                            )
+                        }
+                    />
 
-            <br />
+                    <CurrencyInput
+                        label="Precio"
+                        value={price}
+                        onValueChange={
+                            setPrice
+                        }
+                    />
 
-            <button onClick={handleUpdateProduct}>
-                Actualizar Producto
-            </button>
+                    <Input
+                        label="Lote"
+                        value={batch}
+                        onChange={(event) =>
+                            setBatch(
+                                event.target.value
+                            )
+                        }
+                    />
 
-            <button onClick={handleDeleteProduct}>
-                Eliminar Producto
-            </button>
+                    <Input
+                        label="Fecha de vencimiento"
+                        type="date"
+                        value={expirationDate}
+                        onChange={(event) =>
+                            setExpirationDate(
+                                event.target.value
+                            )
+                        }
+                    />
 
-            <button
-                onClick={() => navigate("/inventory/products")}
-            >
-                Atrás
-            </button>
+                    <Select
+                        label="Proveedor"
+                        value={String(
+                            supplierId
+                        )}
+                        options={suppliers.map(
+                            (
+                                supplier
+                            ) => ({
+                                value: String(
+                                    supplier.id
+                                ),
+                                label:
+                                    supplier.name,
+                            })
+                        )}
+                        onChange={(
+                            event
+                        ) =>
+                            setSupplierId(
+                                Number(
+                                    event.target
+                                        .value
+                                )
+                            )
+                        }
+                    />
+
+                </div>
+
+                <div className="edit-product-page__actions">
+
+                    <Button
+                        variant="secondary"
+                        onClick={() =>
+                            navigate(
+                                "/inventory/products"
+                            )
+                        }
+                    >
+                        <ArrowLeft
+                            size={18}
+                        />
+                        Volver
+                    </Button>
+
+                    <Button
+                        variant="danger"
+                        onClick={
+                            handleDeleteProduct
+                        }
+                    >
+                        <Trash2
+                            size={18}
+                        />
+                        Eliminar
+                    </Button>
+
+                    <Button
+                        onClick={
+                            handleUpdateProduct
+                        }
+                    >
+                        <Save
+                            size={18}
+                        />
+                        Guardar cambios
+                    </Button>
+
+                </div>
+
+            </Card>
+
+            <Toast
+                open={toastOpen}
+                variant={toastVariant}
+                message={toastMessage}
+                onClose={() =>
+                    setToastOpen(false)
+                }
+            />
 
         </div>
 
     );
 
 }
-
