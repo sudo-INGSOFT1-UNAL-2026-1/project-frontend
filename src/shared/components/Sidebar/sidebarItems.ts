@@ -69,6 +69,25 @@ export const sidebarItems: SidebarItem[] = [
         permission: "canAccessPurchases",
         children: [
             {
+                id: "purchase-orders",
+                label: "Órdenes de compra",
+                icon: ShoppingCart,
+                children: [
+                    {
+                        id: "purchase-list",
+                        label: "Lista de compras",
+                        path: "/purchases",
+                        icon: ShoppingCart,
+                    },
+                    {
+                        id: "purchase-create",
+                        label: "Nueva compra",
+                        path: "/purchases/create",
+                        icon: PackagePlus,
+                    },
+                ],
+            },
+            {
                 id: "suppliers",
                 label: "Proveedores",
                 icon: Truck,
@@ -124,3 +143,4 @@ export const sidebarItems: SidebarItem[] = [
         ],
     },
 ];
+

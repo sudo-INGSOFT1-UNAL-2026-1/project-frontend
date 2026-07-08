@@ -13,8 +13,10 @@ import Table from "../../../../../shared/components/Table";
 import type { TableColumn } from "../../../../../shared/components/Table/types";
 
 import { getAllProducts } from "../../services/productService";
+import { getAllSuppliers } from "../../../../purchases/supplier/services/supplierService";
 
 import type { Product } from "../../types/Product";
+import type { Supplier } from "../../../../purchases/supplier/types/Supplier";
 
 import "./ProductsPage.css";
 
@@ -24,15 +26,17 @@ export default function ProductsPage() {
 
     const [products, setProducts] = useState<Product[]>([]);
 
+    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
 
     useEffect(() => {
-        loadProducts();
+        loadData();
     }, []);
 
-    async function loadProducts() {
+    async function loadData() {
 
         setLoading(true);
 
@@ -40,9 +44,20 @@ export default function ProductsPage() {
 
         try {
 
-            const response = await getAllProducts();
+            const [
+                productsResponse,
+                suppliersResponse,
+            ] = await Promise.all([
 
-            setProducts(response);
+                getAllProducts(),
+
+                getAllSuppliers(),
+
+            ]);
+
+            setProducts(productsResponse);
+
+            setSuppliers(suppliersResponse);
 
         } catch {
 
@@ -55,6 +70,18 @@ export default function ProductsPage() {
             setLoading(false);
 
         }
+
+    }
+
+    function getSupplierName(supplierId: number) {
+
+        const supplier = suppliers.find(
+            (supplier) => supplier.id === supplierId
+        );
+
+        return supplier
+            ? supplier.name
+            : `#${supplierId}`;
 
     }
 
@@ -103,8 +130,8 @@ export default function ProductsPage() {
                         product.stock > 10
                             ? "success"
                             : product.stock > 0
-                            ? "warning"
-                            : "danger"
+                                ? "warning"
+                                : "danger"
                     }
                 >
                     {product.stock}
@@ -120,8 +147,10 @@ export default function ProductsPage() {
             title: "Vencimiento",
         },
         {
-            key: "supplierId",
+            key: "supplier",
             title: "Proveedor",
+            render: (product) =>
+                getSupplierName(product.supplierId),
         },
         {
             key: "actions",
@@ -131,7 +160,9 @@ export default function ProductsPage() {
                     size="sm"
                     variant="secondary"
                     onClick={() =>
-                        navigate(`/inventory/products/edit/${product.id}`)
+                        navigate(
+                            `/inventory/products/edit/${product.id}`
+                        )
                     }
                 >
                     <SquarePen size={16} />
