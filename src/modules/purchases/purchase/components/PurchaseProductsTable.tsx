@@ -1,3 +1,12 @@
+import { Trash2 } from "lucide-react";
+
+import Button from "../../../../shared/components/Button";
+import Card from "../../../../shared/components/Card";
+import EmptyState from "../../../../shared/components/EmptyState";
+import Table from "../../../../shared/components/Table";
+
+import type { TableColumn } from "../../../../shared/components/Table/types";
+
 import type { Product } from "../../../inventory/product/types/Product";
 import type { PurchaseProductRequest } from "../types/PurchaseProductRequest";
 
@@ -11,6 +20,13 @@ interface PurchaseProductsTableProps {
 
 }
 
+interface PurchaseProductRow
+    extends PurchaseProductRequest {
+
+    index: number;
+
+}
+
 export default function PurchaseProductsTable({
 
     items,
@@ -21,109 +37,122 @@ export default function PurchaseProductsTable({
 
 }: PurchaseProductsTableProps) {
 
-    function getProductName(productId: number) {
+    function getProductName(
+        productId: number
+    ) {
 
         const product = products.find(
-            (product) => product.id === productId
+            (item) =>
+                item.id === productId
         );
 
-        return product ? product.name : "Producto";
+        return product?.name ??
+            "Producto";
 
     }
 
-    if (items.length === 0) {
+    const rows: PurchaseProductRow[] =
+        items.map(
+            (item, index) => ({
 
-        return (
+                ...item,
 
-            <div>
+                index,
 
-                <h3>Productos</h3>
-
-                <p>No hay productos agregados.</p>
-
-            </div>
-
+            })
         );
 
-    }
+    const columns: TableColumn<PurchaseProductRow>[] = [
+        {
+            key: "productId",
+            title: "Producto",
+            render: (item) =>
+                getProductName(
+                    item.productId
+                ),
+        },
+        {
+            key: "quantity",
+            title: "Cantidad",
+        },
+        {
+            key: "unitPrice",
+            title: "Precio unitario",
+            render: (item) =>
+                new Intl.NumberFormat(
+                    "es-CO",
+                    {
+                        style: "currency",
+                        currency: "COP",
+                        minimumFractionDigits: 2,
+                    }
+                ).format(
+                    item.unitPrice
+                ),
+        },
+        {
+            key: "subtotal",
+            title: "Subtotal",
+            render: (item) =>
+                new Intl.NumberFormat(
+                    "es-CO",
+                    {
+                        style: "currency",
+                        currency: "COP",
+                        minimumFractionDigits: 2,
+                    }
+                ).format(
+                    item.quantity *
+                        item.unitPrice
+                ),
+        },
+        {
+            key: "actions",
+            title: "Acciones",
+            render: (item) => (
+                <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={() =>
+                        onRemove(
+                            item.index
+                        )
+                    }
+                >
+                    <Trash2
+                        size={16}
+                    />
+                    Eliminar
+                </Button>
+            ),
+        },
+    ];
 
     return (
 
-        <div>
+        <Card>
 
-            <h3>Productos agregados</h3>
+            <h3>
+                Productos agregados
+            </h3>
 
-            <table>
+            {rows.length === 0 ? (
 
-                <thead>
+                <EmptyState
+                    title="No hay productos"
+                    description="Agregue al menos un producto a la compra."
+                />
 
-                    <tr>
+            ) : (
 
-                        <th>Producto</th>
+                <Table<PurchaseProductRow>
+                    columns={columns}
+                    data={rows}
+                />
 
-                        <th>Cantidad</th>
+            )}
 
-                        <th>Precio Unitario</th>
-
-                        <th>Subtotal</th>
-
-                        <th></th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {items.map((item, index) => (
-
-                        <tr key={index}>
-
-                            <td>
-
-                                {getProductName(item.productId)}
-
-                            </td>
-
-                            <td>
-
-                                {item.quantity}
-
-                            </td>
-
-                            <td>
-
-                                ${item.unitPrice}
-
-                            </td>
-
-                            <td>
-
-                                ${item.quantity * item.unitPrice}
-
-                            </td>
-
-                            <td>
-
-                                <button
-                                    onClick={() =>
-                                        onRemove(index)
-                                    }
-                                >
-                                    Eliminar
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    ))}
-
-                </tbody>
-
-            </table>
-
-        </div>
+        </Card>
 
     );
 

@@ -1,3 +1,7 @@
+import Card from "../../../../shared/components/Card";
+import Input from "../../../../shared/components/Input";
+import Select from "../../../../shared/components/Select";
+
 import type { Supplier } from "../../supplier/types/Supplier";
 
 interface PurchaseFormProps {
@@ -16,11 +20,13 @@ interface PurchaseFormProps {
 
     setDeliveryDate: (deliveryDate: string) => void;
 
-    state: string;
+    state?: string;
 
-    setState: (state: string) => void;
+    setState?: (state: string) => void;
 
     readonlySupplier?: boolean;
+
+    showState?: boolean;
 
 }
 
@@ -40,119 +46,95 @@ export default function PurchaseForm({
 
     setDeliveryDate,
 
-    state,
+    state = "PENDING",
 
     setState,
 
     readonlySupplier = false,
 
+    showState = true,
+
 }: PurchaseFormProps) {
 
     return (
 
-        <div>
+        <Card>
 
-            <div>
+            <div className="purchase-form">
 
-                <label>Proveedor</label>
-
-                <br />
-
-                <select
-                    value={supplierId}
-                    disabled={readonlySupplier}
-                    onChange={(e) =>
-                        setSupplierId(Number(e.target.value))
+                <Select
+                    label="Proveedor"
+                    value={
+                        supplierId === 0
+                            ? ""
+                            : String(supplierId)
                     }
-                >
+                    placeholder="Seleccione un proveedor"
+                    disabled={readonlySupplier}
+                    options={suppliers.map((supplier) => ({
+                        value: String(supplier.id),
+                        label: supplier.name,
+                    }))}
+                    onChange={(event) =>
+                        setSupplierId(
+                            Number(event.target.value)
+                        )
+                    }
+                />
 
-                    <option value={0}>
-                        Seleccione un proveedor
-                    </option>
-
-                    {suppliers.map((supplier) => (
-
-                        <option
-                            key={supplier.id}
-                            value={supplier.id}
-                        >
-                            {supplier.name}
-                        </option>
-
-                    ))}
-
-                </select>
-
-            </div>
-
-            <br />
-
-            <div>
-
-                <label>Fecha de pago</label>
-
-                <br />
-
-                <input
+                <Input
+                    label="Fecha de pago"
                     type="date"
                     value={paymentDate}
-                    onChange={(e) =>
-                        setPaymentDate(e.target.value)
+                    onChange={(event) =>
+                        setPaymentDate(
+                            event.target.value
+                        )
                     }
                 />
 
-            </div>
-
-            <br />
-
-            <div>
-
-                <label>Fecha de entrega</label>
-
-                <br />
-
-                <input
+                <Input
+                    label="Fecha de entrega"
                     type="date"
                     value={deliveryDate}
-                    onChange={(e) =>
-                        setDeliveryDate(e.target.value)
+                    onChange={(event) =>
+                        setDeliveryDate(
+                            event.target.value
+                        )
                     }
                 />
 
-            </div>
+                {showState && (
 
-            <br />
+                    <Select
+                        label="Estado"
+                        value={state}
+                        options={[
+                            {
+                                value: "PENDING",
+                                label: "Pendiente",
+                            },
+                            {
+                                value: "COMPLETED",
+                                label: "Completada",
+                            },
+                            {
+                                value: "CANCELLED",
+                                label: "Cancelada",
+                            },
+                        ]}
+                        onChange={(event) =>
+                            setState?.(
+                                event.target.value
+                            )
+                        }
+                    />
 
-            <div>
-
-                <label>Estado</label>
-
-                <br />
-
-                <select
-                    value={state}
-                    onChange={(e) =>
-                        setState(e.target.value)
-                    }
-                >
-
-                    <option value="PENDING">
-                        Pendiente
-                    </option>
-
-                    <option value="COMPLETED">
-                        Completada
-                    </option>
-
-                    <option value="CANCELLED">
-                        Cancelada
-                    </option>
-
-                </select>
+                )}
 
             </div>
 
-        </div>
+        </Card>
 
     );
 

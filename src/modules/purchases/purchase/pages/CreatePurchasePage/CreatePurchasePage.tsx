@@ -1,12 +1,34 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
+import {
+    ArrowLeft,
+    ShoppingCart,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import { createPurchase } from "../../services/purchaseService";
+import Alert from "../../../../../shared/components/Alert";
+import Button from "../../../../../shared/components/Button";
+import Card from "../../../../../shared/components/Card";
+import Spinner from "../../../../../shared/components/Spinner";
 
-import { getAllProducts } from "../../../../inventory/product/services/productService";
-import { getAllSuppliers } from "../../../supplier/services/supplierService";
+import {
+    createPurchase,
+} from "../../services/purchaseService";
 
-import { getCurrentUser } from "../../../../../shared/utils/sessionManager";
+import {
+    getAllProducts,
+} from "../../../../inventory/product/services/productService";
+
+import {
+    getAllSuppliers,
+} from "../../../supplier/services/supplierService";
+
+import {
+    getCurrentUser,
+} from "../../../../../shared/utils/sessionManager";
 
 import PurchaseForm from "../../components/PurchaseForm";
 import ProductSelector from "../../components/ProductSelector";
@@ -16,25 +38,39 @@ import type { Product } from "../../../../inventory/product/types/Product";
 import type { Supplier } from "../../../supplier/types/Supplier";
 import type { PurchaseProductRequest } from "../../types/PurchaseProductRequest";
 
+import "./CreatePurchasePage.css";
+
 export default function CreatePurchasePage() {
 
     const navigate = useNavigate();
 
-    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+    const [suppliers, setSuppliers] =
+        useState<Supplier[]>([]);
 
-    const [products, setProducts] = useState<Product[]>([]);
+    const [products, setProducts] =
+        useState<Product[]>([]);
 
-    const [supplierId, setSupplierId] = useState(0);
+    const [supplierId, setSupplierId] =
+        useState(0);
 
-    const [paymentDate, setPaymentDate] = useState("");
+    const [paymentDate, setPaymentDate] =
+        useState("");
 
-    const [deliveryDate, setDeliveryDate] = useState("");
+    const [deliveryDate, setDeliveryDate] =
+        useState("");
 
-    const [state, setState] = useState("PENDING");
-
-    const [purchaseProducts, setPurchaseProducts] = useState<
+    const [
+        purchaseProducts,
+        setPurchaseProducts,
+    ] = useState<
         PurchaseProductRequest[]
     >([]);
+
+    const [loading, setLoading] =
+        useState(true);
+
+    const [error, setError] =
+        useState("");
 
     useEffect(() => {
 
@@ -44,92 +80,128 @@ export default function CreatePurchasePage() {
 
     async function loadInitialData() {
 
+        setLoading(true);
+
+        setError("");
+
         try {
 
-            const [suppliersResponse, productsResponse] =
-                await Promise.all([
-                    getAllSuppliers(),
-                    getAllProducts(),
-                ]);
+            const [
+                suppliersResponse,
+                productsResponse,
+            ] = await Promise.all([
+                getAllSuppliers(),
+                getAllProducts(),
+            ]);
 
-            setSuppliers(suppliersResponse);
+            setSuppliers(
+                suppliersResponse
+            );
 
-            setProducts(productsResponse);
+            setProducts(
+                productsResponse
+            );
 
-        } catch (error) {
+        } catch {
 
-            console.error(error);
+            setError(
+                "No fue posible cargar la información."
+            );
 
-            alert("No fue posible cargar la información.");
+        } finally {
+
+            setLoading(false);
 
         }
 
     }
 
-function handleAddProduct(product: PurchaseProductRequest) {
+    function handleAddProduct(
+        product: PurchaseProductRequest
+    ) {
 
-    setPurchaseProducts((previous) => {
+        setPurchaseProducts(
+            (previous) => {
 
-        const existingProduct = previous.find(
-            (item) => item.productId === product.productId
+                const existing =
+                    previous.find(
+                        (item) =>
+                            item.productId ===
+                            product.productId
+                    );
+
+                if (existing) {
+
+                    return previous.map(
+                        (item) =>
+
+                            item.productId ===
+                            product.productId
+                                ? {
+                                      ...item,
+                                      quantity:
+                                          item.quantity +
+                                          product.quantity,
+                                  }
+                                : item
+                    );
+
+                }
+
+                return [
+                    ...previous,
+                    product,
+                ];
+
+            }
         );
 
-        if (existingProduct) {
+    }
 
-            return previous.map((item) =>
+    function handleRemoveProduct(
+        index: number
+    ) {
 
-                item.productId === product.productId
-                    ? {
-                        ...item,
-                        quantity: item.quantity + product.quantity,
-                    }
-                    : item
+        setPurchaseProducts(
+            (previous) =>
+                previous.filter(
+                    (_, i) =>
+                        i !== index
+                )
+        );
+
+    }
+
+    const totalCost =
+        useMemo(() => {
+
+            return purchaseProducts.reduce(
+
+                (
+                    total,
+                    product
+                ) =>
+
+                    total +
+                    product.quantity *
+                        product.unitPrice,
+
+                0
 
             );
 
-        }
-
-        return [
-
-            ...previous,
-
-            product,
-
-        ];
-
-    });
-
-}
-
-    function handleRemoveProduct(index: number) {
-
-        setPurchaseProducts((previous) =>
-            previous.filter((_, i) => i !== index)
-        );
-
-    }
-
-    const totalCost = useMemo(() => {
-
-        return purchaseProducts.reduce(
-
-            (total, product) =>
-
-                total + product.quantity * product.unitPrice,
-
-            0
-
-        );
-
-    }, [purchaseProducts]);
+        }, [purchaseProducts]);
 
     async function handleCreatePurchase() {
 
-        const user = getCurrentUser();
+        const user =
+            getCurrentUser();
 
         if (!user) {
 
-            alert("No existe un usuario autenticado.");
+            alert(
+                "No existe un usuario autenticado."
+            );
 
             return;
 
@@ -137,7 +209,9 @@ function handleAddProduct(product: PurchaseProductRequest) {
 
         if (purchaseProducts.length === 0) {
 
-            alert("Debe agregar al menos un producto.");
+            alert(
+                "Debe agregar al menos un producto."
+            );
 
             return;
 
@@ -155,95 +229,161 @@ function handleAddProduct(product: PurchaseProductRequest) {
 
                 deliveryDate,
 
-                state,
+                state: "PENDING",
 
                 totalCost,
 
-                products: purchaseProducts,
+                products:
+                    purchaseProducts,
 
             });
 
-            alert("Compra registrada correctamente.");
+            alert(
+                "Compra registrada correctamente."
+            );
 
-            navigate("/purchases");
+            navigate(
+                "/purchases"
+            );
 
-        } catch (error) {
+        } catch {
 
-            console.error(error);
-
-            alert("No fue posible registrar la compra.");
+            alert(
+                "No fue posible registrar la compra."
+            );
 
         }
 
     }
 
+    if (loading) {
+
+        return (
+
+            <div className="create-purchase-page__loading">
+
+                <Spinner
+                    label="Cargando información..."
+                />
+
+            </div>
+
+        );
+
+    }
+
     return (
 
-        <div>
+        <div className="create-purchase-page">
 
-            <h1>Nueva Compra</h1>
+            <div className="create-purchase-page__header">
 
-            <hr />
+                <div>
+
+                    <h1 className="create-purchase-page__title">
+                        Nueva compra
+                    </h1>
+
+                    <p className="create-purchase-page__subtitle">
+                        Registre una nueva orden de compra.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {error && (
+
+                <Alert
+                    variant="danger"
+                    title="Error"
+                    closable
+                    onClose={() =>
+                        setError("")
+                    }
+                >
+                    {error}
+                </Alert>
+
+            )}
 
             <PurchaseForm
-
                 suppliers={suppliers}
-
                 supplierId={supplierId}
-
                 setSupplierId={setSupplierId}
-
                 paymentDate={paymentDate}
-
                 setPaymentDate={setPaymentDate}
-
                 deliveryDate={deliveryDate}
-
                 setDeliveryDate={setDeliveryDate}
-
-                state={state}
-
-                setState={setState}
-
+                showState={false}
             />
-
-            <br />
 
             <ProductSelector
-
                 supplierId={supplierId}
-
                 products={products}
-
-                onAddProduct={handleAddProduct}
-
+                onAddProduct={
+                    handleAddProduct
+                }
             />
-
-            <br />
 
             <PurchaseProductsTable
-
                 items={purchaseProducts}
-
                 products={products}
-
-                onRemove={handleRemoveProduct}
-
+                onRemove={
+                    handleRemoveProduct
+                }
             />
 
-            <br />
+            <Card>
 
-            <h3>Total: ${totalCost}</h3>
+                <div className="create-purchase-page__summary">
 
-            <button onClick={handleCreatePurchase}>
-                Registrar Compra
-            </button>
+                    <span>
+                        Total de la compra
+                    </span>
 
-            <button
-                onClick={() => navigate("/purchases")}
-            >
-                Volver
-            </button>
+                    <strong>
+
+                        {new Intl.NumberFormat(
+                            "es-CO",
+                            {
+                                style: "currency",
+                                currency: "COP",
+                            }
+                        ).format(
+                            totalCost
+                        )}
+
+                    </strong>
+
+                </div>
+
+            </Card>
+
+            <div className="create-purchase-page__actions">
+
+                <Button
+                    variant="secondary"
+                    onClick={() =>
+                        navigate(
+                            "/purchases"
+                        )
+                    }
+                >
+                    <ArrowLeft size={18} />
+                    Volver
+                </Button>
+
+                <Button
+                    onClick={
+                        handleCreatePurchase
+                    }
+                >
+                    <ShoppingCart size={18} />
+                    Registrar compra
+                </Button>
+
+            </div>
 
         </div>
 

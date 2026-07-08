@@ -23,7 +23,7 @@ import CreateCustomerPage from "../modules/sales/customer/pages/CreateCustomerPa
 import EditCustomerPage from "../modules/sales/customer/pages/EditCustomerPage/EditCustomerPage.tsx";
 import PurchasesPage from "../modules/purchases/purchase/pages/PurchasesPage/PurchasesPage.tsx";
 import CreatePurchasePage from "../modules/purchases/purchase/pages/CreatePurchasePage/CreatePurchasePage.tsx";
-import EditPurchasePage from "../modules/purchases/purchase/pages/EditProductPage/EditProductPage.tsx";
+import EditPurchasePage from "../modules/purchases/purchase/pages/EditPurchasePage/EditPurchasePage.tsx";
 
 export default function AppRouter() {
     return(
@@ -163,20 +163,19 @@ export default function AppRouter() {
                                     </ProtectedRoute>
                                 }
                             />
+                            <Route
+                                    index
+                                    element={
+                                        <ProtectedRoute>
+                                            <AuthorizationRoute permission="canAccessPurchases">
+                                                <PurchasesPage />
+                                            </AuthorizationRoute>
+                                        </ProtectedRoute>
+                                    }
+                                />
 
-                            <Route 
-                                path="purchases"
-                                element={
-                                    <ProtectedRoute>
-                                        <AuthorizationRoute permission="canAccessPurchases">
-                                            <PurchasesPage />
-                                        </AuthorizationRoute>
-                                    </ProtectedRoute>
-                                }
-                            />
-
-                            <Route 
-                                path="purchases/create"
+                            <Route
+                                path="create"
                                 element={
                                     <ProtectedRoute>
                                         <AuthorizationRoute permission="canAccessPurchases">
@@ -186,8 +185,8 @@ export default function AppRouter() {
                                 }
                             />
 
-                            <Route 
-                                path="purchases/edit/:purchaseId"
+                            <Route
+                                path="edit/:purchaseId"
                                 element={
                                     <ProtectedRoute>
                                         <AuthorizationRoute permission="canAccessPurchases">
@@ -196,6 +195,7 @@ export default function AppRouter() {
                                     </ProtectedRoute>
                                 }
                             />
+
                             
                     </Route>
                     <Route path="/sales" >

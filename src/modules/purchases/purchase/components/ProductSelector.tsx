@@ -1,4 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
+import { Plus } from "lucide-react";
+
+import Button from "../../../../shared/components/Button";
+import Card from "../../../../shared/components/Card";
+import Input from "../../../../shared/components/Input";
+import Select from "../../../../shared/components/Select";
+import Toast from "../../../../shared/components/Toast";
 
 import type { Product } from "../../../inventory/product/types/Product";
 import type { PurchaseProductRequest } from "../types/PurchaseProductRequest";
@@ -9,7 +20,9 @@ interface ProductSelectorProps {
 
     products: Product[];
 
-    onAddProduct: (product: PurchaseProductRequest) => void;
+    onAddProduct: (
+        product: PurchaseProductRequest
+    ) => void;
 
 }
 
@@ -23,16 +36,32 @@ export default function ProductSelector({
 
 }: ProductSelectorProps) {
 
-    const [productId, setProductId] = useState(0);
+    const [productId, setProductId] =
+        useState(0);
 
-    const [quantity, setQuantity] = useState(1);
+    const [quantity, setQuantity] =
+        useState(1);
 
-    const [unitPrice, setUnitPrice] = useState(0);
+    const [unitPrice, setUnitPrice] =
+        useState(0);
+
+    const [toastOpen, setToastOpen] =
+        useState(false);
+
+    const [toastMessage, setToastMessage] =
+        useState("");
+
+    const [toastVariant, setToastVariant] =
+        useState<"success" | "danger">(
+            "success"
+        );
 
     const availableProducts = useMemo(() => {
 
         return products.filter(
-            (product) => product.supplierId === supplierId
+            (product) =>
+                product.supplierId ===
+                supplierId
         );
 
     }, [products, supplierId]);
@@ -48,12 +77,15 @@ export default function ProductSelector({
         }
 
         const product = products.find(
-            (item) => item.id === productId
+            (item) =>
+                item.id === productId
         );
 
         if (product) {
 
-            setUnitPrice(product.price);
+            setUnitPrice(
+                product.price
+            );
 
         }
 
@@ -63,7 +95,15 @@ export default function ProductSelector({
 
         if (!productId) {
 
-            alert("Seleccione un producto.");
+            setToastVariant(
+                "danger"
+            );
+
+            setToastMessage(
+                "Seleccione un producto."
+            );
+
+            setToastOpen(true);
 
             return;
 
@@ -71,7 +111,15 @@ export default function ProductSelector({
 
         if (quantity <= 0) {
 
-            alert("La cantidad debe ser mayor que cero.");
+            setToastVariant(
+                "danger"
+            );
+
+            setToastMessage(
+                "La cantidad debe ser mayor que cero."
+            );
+
+            setToastOpen(true);
 
             return;
 
@@ -93,91 +141,111 @@ export default function ProductSelector({
 
         setUnitPrice(0);
 
+        setToastVariant(
+            "success"
+        );
+
+        setToastMessage(
+            "Producto agregado."
+        );
+
+        setToastOpen(true);
+
     }
 
     return (
 
-        <div>
+        <>
 
-            <h3>Agregar producto</h3>
+            <Card>
 
-            <div>
+                <h3>
+                    Agregar producto
+                </h3>
 
-                <label>Producto</label>
-
-                <br />
-
-                <select
-                    value={productId}
-                    onChange={(e) =>
-                        setProductId(Number(e.target.value))
+                <Select
+                    label="Producto"
+                    value={
+                        productId === 0
+                            ? ""
+                            : String(
+                                  productId
+                              )
                     }
-                    disabled={supplierId === 0}
-                >
+                    placeholder="Seleccione un producto"
+                    disabled={
+                        supplierId === 0
+                    }
+                    options={availableProducts.map(
+                        (product) => ({
+                            value: String(
+                                product.id
+                            ),
+                            label: product.name,
+                        })
+                    )}
+                    onChange={(event) =>
+                        setProductId(
+                            Number(
+                                event.target
+                                    .value
+                            )
+                        )
+                    }
+                />
 
-                    <option value={0}>
-                        Seleccione un producto
-                    </option>
-
-                    {availableProducts.map((product) => (
-
-                        <option
-                            key={product.id}
-                            value={product.id}
-                        >
-                            {product.name}
-                        </option>
-
-                    ))}
-
-                </select>
-
-            </div>
-
-            <br />
-
-            <div>
-
-                <label>Cantidad</label>
-
-                <br />
-
-                <input
+                <Input
+                    label="Cantidad"
                     type="number"
                     min={1}
-                    value={quantity}
-                    onChange={(e) =>
-                        setQuantity(Number(e.target.value))
+                    value={String(
+                        quantity
+                    )}
+                    onChange={(event) =>
+                        setQuantity(
+                            Number(
+                                event.target
+                                    .value
+                            )
+                        )
                     }
                 />
 
-            </div>
-
-            <br />
-
-            <div>
-
-                <label>Precio unitario</label>
-
-                <br />
-
-                <input
-                    type="number"
-                    value={unitPrice}
-                    onChange={(e) =>
-                        setUnitPrice(Number(e.target.value))
+                <Input
+                    label="Precio unitario"
+                    type="currency"
+                    value={String(
+                        unitPrice
+                    )}
+                    onChange={(event) =>
+                        setUnitPrice(
+                            Number(
+                                event.target
+                                    .value
+                            )
+                        )
                     }
                 />
 
-            </div>
+                <Button
+                    onClick={handleAdd}
+                >
+                    <Plus size={18} />
+                    Agregar producto
+                </Button>
 
-            <br />
+            </Card>
 
-            <button onClick={handleAdd}>
-                Agregar producto
-            </button>
+            <Toast
+                open={toastOpen}
+                variant={toastVariant}
+                message={toastMessage}
+                onClose={() =>
+                    setToastOpen(false)
+                }
+            />
 
-        </div>
+        </>
 
     );
 

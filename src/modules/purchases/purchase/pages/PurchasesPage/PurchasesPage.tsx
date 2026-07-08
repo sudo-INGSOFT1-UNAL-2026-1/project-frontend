@@ -19,6 +19,8 @@ import type { User } from "../../../../user/types/User";
 
 import type { TableColumn } from "../../../../../shared/components/Table/types";
 
+import "./PurchasesPage.css";
+
 export default function PurchasesPage() {
 
     const navigate = useNavigate();
@@ -153,7 +155,7 @@ export default function PurchasesPage() {
             key: "totalCost",
             title: "Total",
             render: (purchase) =>
-                `$${purchase.totalCost}`,
+                `$${purchase.totalCost.toLocaleString("es-CO")}`,
         },
 
         {
@@ -186,7 +188,7 @@ export default function PurchasesPage() {
 
         return (
 
-            <div>
+            <div className="purchases-page__loading">
 
                 <Spinner
                     label="Cargando compras..."
@@ -200,22 +202,17 @@ export default function PurchasesPage() {
 
     return (
 
-        <div>
+        <div className="purchases-page">
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "20px",
-                }}
-            >
+            <div className="purchases-page__header">
 
                 <div>
 
-                    <h1>Compras</h1>
+                    <h1 className="purchases-page__title">
+                        Compras
+                    </h1>
 
-                    <p>
+                    <p className="purchases-page__subtitle">
                         Administre las compras del sistema.
                     </p>
 
